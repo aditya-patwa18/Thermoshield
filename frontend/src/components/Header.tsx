@@ -123,6 +123,18 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
+  const selectLocalMatch = () => {
+    const selectedLocation = [...filteredMonitored, ...filteredWorld][0];
+    if (!selectedLocation) return;
+    if ('id' in selectedLocation) {
+      onSelectCity(selectedLocation.id);
+    } else {
+      onSearchCoordinates(selectedLocation.lat, selectedLocation.lon, selectedLocation.name);
+    }
+    setIsOpen(false);
+    setSearchQuery('');
+  };
+
   const handleSearchSubmit = () => {
     const trimmed = searchQuery.trim();
     if (!trimmed) return;
@@ -138,21 +150,14 @@ export const Header: React.FC<HeaderProps> = ({
           onSearchCoordinates(lat, lon, name);
           setIsOpen(false);
           setSearchQuery('');
+        } else {
+          selectLocalMatch();
         }
       });
       return;
     }
 
-    const selectedLocation = [...filteredMonitored, ...filteredWorld][0];
-    if (selectedLocation) {
-      if ('id' in selectedLocation) {
-        onSelectCity(selectedLocation.id);
-      } else {
-        onSearchCoordinates(selectedLocation.lat, selectedLocation.lon, selectedLocation.name);
-      }
-      setIsOpen(false);
-      setSearchQuery('');
-    }
+    selectLocalMatch();
   };
 
   const formattedDate = new Intl.DateTimeFormat('en-GB', {
@@ -162,7 +167,7 @@ export const Header: React.FC<HeaderProps> = ({
   }).format(new Date());
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/90 backdrop-blur-xl">
+    <header className="z-40 lg:sticky lg:top-0 border-b border-slate-800 bg-slate-950/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-[1500px] flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:px-6">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-red-600 shadow-lg shadow-orange-950/30">
@@ -194,9 +199,13 @@ export const Header: React.FC<HeaderProps> = ({
                 if (event.key === 'Enter') {
                   event.preventDefault();
                   handleSearchSubmit();
+                } else if (event.key === 'Escape') {
+                  setIsOpen(false);
+                  event.currentTarget.blur();
                 }
               }}
               placeholder="Search a city, address or location..."
+              aria-label="Search a city, address or location"
               className="w-full rounded-xl border border-slate-700 bg-slate-900/80 py-2.5 pl-10 pr-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-orange-500/60 focus:outline-none"
             />
           </div>

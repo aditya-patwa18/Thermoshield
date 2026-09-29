@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Info } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { DashboardData } from '../types';
 import { ScenarioSimulator } from '../components/Scenario/ScenarioSimulator';
 

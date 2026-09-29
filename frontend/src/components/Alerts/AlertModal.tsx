@@ -8,8 +8,7 @@ import {
   Mail, 
   Smartphone, 
   AlertTriangle,
-  X,
-  ShieldAlert
+  X
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { SystemStatus } from '../../types';
@@ -38,28 +37,39 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   const [selectedTemplate, setSelectedTemplate] = useState<string>('public_warning');
   const [activeChannel, setActiveChannel] = useState<'sms' | 'whatsapp' | 'email'>('sms');
   const [recipient, setRecipient] = useState<string>('');
-  const [emailSubject, setEmailSubject] = useState<string>(`[${severity.toUpperCase()} HEAT ADVISORY] ${locationName}`);
+  const emailSubject = `[${severity.toUpperCase()} HEAT ADVISORY] ${locationName}`;
   
   const [previewData, setPreviewData] = useState<any>(null);
   const [sending, setSending] = useState<boolean>(false);
   const [sendResult, setSendResult] = useState<any>(null);
   const [copied, setCopied] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      setRecipient('');
-      setSendResult(null);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
+  const changeChannel = (channel: 'sms' | 'whatsapp' | 'email') => {
+    setActiveChannel(channel);
     setRecipient('');
     setSendResult(null);
-  }, [activeChannel]);
+  };
+
+  const handleClose = () => {
+    setRecipient('');
+    setSendResult(null);
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   // Fetch preview on parameter change
   useEffect(() => {
     if (!isOpen) return;
+    let cancelled = false;
     const fetchPreview = async () => {
       try {
         const res = await api.previewAlert({
@@ -72,12 +82,15 @@ export const AlertModal: React.FC<AlertModalProps> = ({
           peak_time: '1:00 PM – 4:30 PM',
           wbgt: 32.2
         });
-        setPreviewData(res);
+        if (!cancelled) setPreviewData(res);
       } catch (e) {
-        console.error('Error fetching preview:', e);
+        if (!cancelled) console.error('Error fetching preview:', e);
       }
     };
     fetchPreview();
+    return () => {
+      cancelled = true;
+    };
   }, [isOpen, selectedTemplate, locationName, severity, temperature, htsi, riskScore]);
 
   if (!isOpen) return null;
@@ -120,9 +133,13 @@ export const AlertModal: React.FC<AlertModalProps> = ({
       const res = await api.sendNotification(activeChannel, normalizedRecipient, selectedMessage, emailSubject);
       setSendResult(res);
     } catch (e: any) {
+      const detail = e?.response?.data?.detail;
+      const message = Array.isArray(detail)
+        ? detail.map((d: any) => d?.msg).filter(Boolean).join('; ')
+        : detail;
       setSendResult({
         success: false,
-        message: e?.response?.data?.detail || e.message || 'Notification transmission failed'
+        message: message || e?.message || 'Notification transmission failed'
       });
     } finally {
       setSending(false);
@@ -147,8 +164,13 @@ export const AlertModal: React.FC<AlertModalProps> = ({
       : previewData?.sms_preview;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
+    >
+      <div role="dialog" aria-modal="true" aria-label="Multi-channel emergency alert dispatcher" className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between">
@@ -166,7 +188,8 @@ export const AlertModal: React.FC<AlertModalProps> = ({
             </div>
           </div>
           <button 
-            onClick={onClose}
+            onClick={handleClose}
+            aria-label="Close dispatcher"
             className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -203,7 +226,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
-                onClick={() => setActiveChannel('sms')}
+                onClick={() => changeChannel('sms')}
                 className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
                   activeChannel === 'sms'
                     ? 'bg-orange-500 text-white border-orange-500 shadow-md'
@@ -215,7 +238,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
               </button>
               <button
                 type="button"
-                onClick={() => setActiveChannel('whatsapp')}
+                onClick={() => changeChannel('whatsapp')}
                 className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
                   activeChannel === 'whatsapp'
                     ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
@@ -227,7 +250,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
               </button>
               <button
                 type="button"
-                onClick={() => setActiveChannel('email')}
+                onClick={() => changeChannel('email')}
                 className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
                   activeChannel === 'email'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-md'
@@ -343,7 +366,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
 
           <div className="flex items-center gap-2">
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-colors"
             >
               Close

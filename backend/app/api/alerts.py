@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+import re
 from typing import Dict, Any, List
 from datetime import datetime, timezone
 
@@ -8,11 +9,15 @@ from ..schemas import (
     SendSMSRequest,
     SendWhatsAppRequest,
     SendEmailRequest,
-    NotificationPreviewRequest
+    NotificationPreviewRequest,
+    UnifiedSendRequest
 )
 from ..services.location_service import location_service
 
 router = APIRouter(tags=["Alerts & Multi-Channel Notifications"])
+
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+PHONE_RE = re.compile(r"^\+?[0-9][0-9\s\-()]{6,18}[0-9]$")
 
 @router.get("/alerts", summary="List Currently Active Monitored Heat Alerts")
 async def get_active_alerts():
@@ -91,6 +96,11 @@ async def preview_alert(req: NotificationPreviewRequest):
     """
     Renders preview text for SMS, WhatsApp, and Email with dynamic parameter substitution.
     """
+    if req.template_key not in ALERT_TEMPLATES:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Unknown template '{req.template_key}'. Available: {', '.join(ALERT_TEMPLATES)}."
+        )
     rendered = format_alert_message(
         template_key=req.template_key,
         location=req.location,
@@ -137,20 +147,22 @@ async def send_email_alert(req: SendEmailRequest):
     return await notification_service.send_email(req.recipient, req.message, subject=req.subject)
 
 @router.post("/alerts/send", summary="Unified Alert Dispatcher")
-async def send_unified_alert(payload: Dict[str, Any]):
-    channel = payload.get("channel", "sms").lower()
-    recipient = payload.get("recipient", "")
-    message = payload.get("message", "")
-    subject = payload.get("subject", "ThermalShield Heat-Health Advisory")
-
+async def send_unified_alert(req: UnifiedSendRequest):
+    recipient = req.recipient.strip()
+    message = req.message.strip()
     if not recipient or not message:
         raise HTTPException(status_code=400, detail="Recipient and message must be provided.")
 
-    if channel == "sms":
-        return await notification_service.send_sms(recipient, message)
-    elif channel == "whatsapp":
+    if req.channel == "email":
+        if not EMAIL_RE.match(recipient):
+            raise HTTPException(status_code=400, detail="Recipient is not a valid email address.")
+        return await notification_service.send_email(recipient, message, subject=req.subject)
+
+    if not PHONE_RE.match(recipient):
+        raise HTTPException(
+            status_code=400,
+            detail="Recipient must be a phone number in international format, e.g. +919876543210."
+        )
+    if req.channel == "whatsapp":
         return await notification_service.send_whatsapp(recipient, message)
-    elif channel == "email":
-        return await notification_service.send_email(recipient, message, subject=subject)
-    else:
-        raise HTTPException(status_code=400, detail=f"Unsupported notification channel: {channel}")
+    return await notification_service.send_sms(recipient, message)

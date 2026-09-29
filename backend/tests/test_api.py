@@ -68,3 +68,90 @@ def test_scenario_simulate():
     assert "baseline" in data
     assert "scenario" in data
     assert data["deltas"]["htsi_change"] > 0
+
+
+# --- Input validation & error handling ---
+
+@pytest.mark.parametrize("path", [
+    "/api/geocode?lat=999&lon=72.87",
+    "/api/geocode?lat=19&lon=-181",
+    "/api/dashboard?lat=200&lon=77.2",
+    "/api/dashboard?lat=20&lon=400",
+    "/api/weather?lat=91&lon=0",
+    "/api/infrastructure/nearest?lat=-91&lon=0",
+    "/api/thermal?temperature=40&humidity=150",
+    "/api/wbgt?temperature=40&humidity=-5",
+    "/api/utci?temperature=40&wind_speed=-1",
+    "/api/htsi?temperature=40&solar_radiation=-10",
+])
+def test_out_of_range_query_params_rejected(path):
+    assert client.get(path).status_code == 422
+
+
+def test_unknown_location_returns_404():
+    assert client.get("/api/dashboard/location/atlantis").status_code == 404
+    assert client.get("/api/locations/atlantis").status_code == 404
+
+
+def test_dashboard_by_coordinates():
+    res = client.get("/api/dashboard?lat=28.6&lon=77.2&name=Test%20Point")
+    assert res.status_code == 200
+    assert res.json()["location"]["latitude"] == 28.6
+
+
+def test_scenario_rejects_out_of_range_inputs():
+    base = {"base_humidity": 60.0, "pvi_score": 50.0}
+    assert client.post("/api/scenario/simulate", json={**base, "base_humidity": 500}).status_code == 422
+    assert client.post("/api/scenario/simulate", json={**base, "pvi_score": -1}).status_code == 422
+    assert client.post("/api/scenario/simulate", json={**base, "base_wind_speed_ms": -3}).status_code == 422
+
+
+def test_interventions_reject_out_of_range_inputs():
+    assert client.post("/api/scenario/interventions", json={"water_points_deployed": -5}).status_code == 422
+    assert client.post("/api/scenario/interventions", json={"capacity_expansion_percent": 10000}).status_code == 422
+    ok = client.post("/api/scenario/interventions", json={"water_points_deployed": 5})
+    assert ok.status_code == 200
+
+
+def test_alert_preview_and_unknown_template():
+    good = client.post("/api/alerts/preview", json={"template_key": "public_warning", "location": "Mumbai"})
+    assert good.status_code == 200
+    assert "Mumbai" in good.json()["sms_preview"]
+    assert client.post("/api/alerts/preview", json={"template_key": "bogus"}).status_code == 404
+
+
+@pytest.mark.parametrize("payload,status", [
+    ({"channel": "pigeon", "recipient": "x", "message": "hi"}, 422),
+    ({"channel": "sms", "recipient": "notaphone", "message": "hi"}, 400),
+    ({"channel": "whatsapp", "recipient": "12", "message": "hi"}, 400),
+    ({"channel": "email", "recipient": "no-at-sign", "message": "hi"}, 400),
+    ({"channel": "sms", "recipient": "+919876543210", "message": "   "}, 400),
+    ({"channel": "sms", "recipient": "", "message": "hi"}, 422),
+    ({"channel": "sms", "message": "hi"}, 422),
+])
+def test_alert_send_validation(payload, status):
+    assert client.post("/api/alerts/send", json=payload).status_code == status
+
+
+@pytest.mark.parametrize("payload", [
+    {"channel": "sms", "recipient": "+91 98765 43210", "message": "Stay hydrated"},
+    {"channel": "whatsapp", "recipient": "+919876543210", "message": "Stay hydrated"},
+    {"channel": "email", "recipient": "officer@example.gov.in", "message": "Advisory", "subject": "Heat"},
+])
+def test_alert_send_valid_payloads_dispatch_to_service(payload, monkeypatch):
+    # Never hit real providers (Twilio/SMTP may be configured in a local .env): stub the service.
+    from app.api import alerts as alerts_api
+
+    calls = []
+
+    async def fake(recipient, message, **kwargs):
+        calls.append((recipient, message))
+        return {"success": True, "status": "stubbed"}
+
+    for name in ("send_sms", "send_whatsapp", "send_email"):
+        monkeypatch.setattr(alerts_api.notification_service, name, fake)
+
+    res = client.post("/api/alerts/send", json=payload)
+    assert res.status_code == 200
+    assert res.json()["status"] == "stubbed"
+    assert calls == [(payload["recipient"], payload["message"])]

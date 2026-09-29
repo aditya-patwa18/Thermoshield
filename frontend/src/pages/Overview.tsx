@@ -1,15 +1,13 @@
 import React from 'react';
-import { ArrowRight, BellRing, Flame, Gauge, MapPin, ShieldAlert, SunMedium } from 'lucide-react';
-import { DashboardData, SystemStatus } from '../types';
+import { ArrowRight, BellRing, Flame, MapPin, ShieldAlert, SunMedium } from 'lucide-react';
+import { DashboardData } from '../types';
 import { RiskMapComponent } from '../components/Map/RiskMapComponent';
 
 interface OverviewPageProps {
   dashboardData: DashboardData | null;
-  systemStatus: SystemStatus | null;
   monitoredCities: any[];
   wardsGeoJSON: any | null;
   onNavigateTab: (tab: any) => void;
-  onSelectCity: (cityId: string) => void;
   onSelectCoords: (lat: number, lon: number, name?: string) => void;
   onOpenAlertModal: () => void;
 }
@@ -24,11 +22,9 @@ const severityClasses: Record<string, string> = {
 
 export const Overview: React.FC<OverviewPageProps> = ({
   dashboardData,
-  systemStatus,
   monitoredCities,
   wardsGeoJSON,
   onNavigateTab,
-  onSelectCity,
   onSelectCoords,
   onOpenAlertModal
 }) => {
@@ -51,18 +47,23 @@ export const Overview: React.FC<OverviewPageProps> = ({
   const { location, weather, thermal, health_risk, forecast_5d, peak_risk_period, risk_drivers, recommended_actions, nearby_facilities, vulnerability } = dashboardData;
 
   const currentAlert = dashboardData.alerts?.[0];
-  const riskDriversSummary = (risk_drivers || []).slice(0, 3);
-  const visibleActions = (recommended_actions || []).slice(0, 3);
-  const publicActions = [
-    'Stay hydrated',
-    'Avoid prolonged afternoon exposure',
-    'Check on vulnerable residents'
-  ];
-  const municipalActions = [
-    'Prepare cooling centers',
-    'Alert healthcare facilities',
-    'Adjust outdoor work schedules'
-  ];
+  const meaningfulDrivers = (risk_drivers || []).filter((d) => d.name !== 'Baseline Metrics');
+  const riskDriversSummary = meaningfulDrivers.slice(0, 3);
+  const explanations = (dashboardData.primary_explanations || []).slice(0, 3);
+
+  const publicCategories = new Set(['Public Alert', 'Targeted Outreach', 'Cooling Shelter']);
+  const liveActions = recommended_actions || [];
+  const audienceActions = liveActions.filter((a) => publicCategories.has(a.category) === (audience === 'public'));
+  const actionList = (audienceActions.length ? audienceActions : liveActions).slice(0, 4).map((a) => ({
+    key: a.title,
+    title: a.title,
+    detail: a.description
+  }));
+  const fallbackActions = (audience === 'public'
+    ? ['Stay hydrated', 'Avoid prolonged afternoon exposure', 'Check on vulnerable residents']
+    : ['Prepare cooling centers', 'Alert healthcare facilities', 'Adjust outdoor work schedules']
+  ).map((t) => ({ key: t, title: t, detail: '' }));
+  const actionsToShow = actionList.length ? actionList : fallbackActions;
 
   return (
     <div className="space-y-5 pb-12">
@@ -78,6 +79,7 @@ export const Overview: React.FC<OverviewPageProps> = ({
             onLayerChange={setActiveMapLayer}
             onSelectLocation={onSelectCoords}
             heightClass="h-[620px]"
+            legendClass="hidden bottom-4 right-16 lg:block"
           />
 
           <div className="pointer-events-none absolute inset-y-0 left-0 w-44 bg-gradient-to-r from-slate-950/25 to-transparent" />
@@ -163,6 +165,11 @@ export const Overview: React.FC<OverviewPageProps> = ({
         <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 sm:p-5">
           <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Why this risk?</div>
           <div className="mt-4 space-y-3">
+            {riskDriversSummary.length === 0 && (
+              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-sm text-slate-300">
+                {explanations[0] || 'No elevated risk drivers detected for this location right now.'}
+              </div>
+            )}
             {riskDriversSummary.map((driver) => (
               <div key={driver.name} className="flex items-start gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
                 <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-lg bg-orange-500/10 text-orange-300">
@@ -185,12 +192,14 @@ export const Overview: React.FC<OverviewPageProps> = ({
             <div className="flex rounded-lg border border-slate-700 bg-slate-950 p-1 text-[10px] uppercase tracking-[0.12em] text-slate-400">
               <button
                 onClick={() => setAudience('public')}
+                aria-pressed={audience === 'public'}
                 className={`rounded-md px-2 py-1 ${audience === 'public' ? 'bg-slate-800 text-white' : ''}`}
               >
                 Public
               </button>
               <button
                 onClick={() => setAudience('municipal')}
+                aria-pressed={audience === 'municipal'}
                 className={`rounded-md px-2 py-1 ${audience === 'municipal' ? 'bg-slate-800 text-white' : ''}`}
               >
                 Municipal
@@ -199,12 +208,15 @@ export const Overview: React.FC<OverviewPageProps> = ({
           </div>
 
           <div className="mt-4 space-y-3">
-            {(audience === 'public' ? publicActions : municipalActions).map((action, index) => (
-              <div key={action} className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-300">
-                  {index === 0 ? <SunMedium className="h-3.5 w-3.5" /> : index === 1 ? <ShieldAlert className="h-3.5 w-3.5" /> : <BellRing className="h-3.5 w-3.5" />}
+            {actionsToShow.map((action, index) => (
+              <div key={action.key} className="flex items-start gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+                <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-300">
+                  {index % 3 === 0 ? <SunMedium className="h-3.5 w-3.5" /> : index % 3 === 1 ? <ShieldAlert className="h-3.5 w-3.5" /> : <BellRing className="h-3.5 w-3.5" />}
                 </div>
-                <span className="text-sm text-slate-200">{action}</span>
+                <div>
+                  <div className="text-sm text-slate-200">{action.title}</div>
+                  {action.detail && <div className="mt-0.5 text-xs text-slate-500">{action.detail}</div>}
+                </div>
               </div>
             ))}
           </div>
@@ -216,8 +228,8 @@ export const Overview: React.FC<OverviewPageProps> = ({
             <div className="text-4xl font-semibold tracking-[-0.08em] text-white">{vulnerability?.score ?? 0}</div>
             <div className="pb-1 text-sm text-slate-400">/ 100</div>
           </div>
-          <div className={`mt-4 inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${severityClasses[health_risk.category] || severityClasses.High}`}>
-            {health_risk.category}
+          <div className={`mt-4 inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${severityClasses[vulnerability?.category || ''] || severityClasses.High}`}>
+            {vulnerability?.category || 'Baseline'}
           </div>
           <button
             onClick={() => onNavigateTab('vulnerability')}

@@ -1,13 +1,11 @@
 import React from 'react';
 import { 
   BookOpen, 
-  ShieldCheck, 
   HelpCircle, 
   Cpu, 
   Info, 
   Flame, 
   Thermometer, 
-  Droplets,
   Layers
 } from 'lucide-react';
 

@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import { 
   Map as MapIcon, 
-  Layers, 
   MapPin, 
-  Flame, 
   ShieldAlert, 
-  Building2, 
   Users,
-  Search,
   Filter
 } from 'lucide-react';
-import { DashboardData, LocationInfo } from '../types';
+import { DashboardData } from '../types';
 import { RiskMapComponent } from '../components/Map/RiskMapComponent';
 import { RiskCard } from '../components/RiskCard/RiskCard';
 

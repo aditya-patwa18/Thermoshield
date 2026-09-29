@@ -14,7 +14,7 @@ import { Methodology } from './pages/Methodology';
 import { AlertModal } from './components/Alerts/AlertModal';
 import { api } from './services/api';
 import { DashboardData, SystemStatus, ActiveAlert } from './types';
-import { AlertCircle, Flame, ShieldAlert, HeartHandshake } from 'lucide-react';
+import { AlertCircle, ShieldAlert } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
@@ -133,11 +133,9 @@ export const App: React.FC = () => {
             {activeTab === 'overview' && (
               <Overview
                 dashboardData={dashboardData}
-                systemStatus={systemStatus}
                 monitoredCities={monitoredCities}
                 wardsGeoJSON={wardsGeoJSON}
                 onNavigateTab={setActiveTab}
-                onSelectCity={handleSelectCity}
                 onSelectCoords={handleSelectCoords}
                 onOpenAlertModal={() => setIsAlertModalOpen(true)}
               />

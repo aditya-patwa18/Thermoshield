@@ -5,10 +5,8 @@ import {
   Send, 
   ShieldAlert, 
   Building2, 
-  HeartPulse, 
   Users,
   Flame,
-  CheckCircle2,
   Clock
 } from 'lucide-react';
 import { DashboardData, ActiveAlert, SystemStatus } from '../types';

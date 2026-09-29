@@ -12,6 +12,7 @@ interface RiskMapProps {
   onLayerChange: (layer: 'risk' | 'thermal' | 'vulnerability' | 'infrastructure') => void;
   onSelectLocation: (lat: number, lon: number, name?: string) => void;
   heightClass?: string;
+  legendClass?: string;
 }
 
 const mapStyles = [
@@ -34,7 +35,8 @@ export const RiskMapComponent: React.FC<RiskMapProps> = ({
   activeLayer,
   onLayerChange,
   onSelectLocation,
-  heightClass = 'h-[500px]'
+  heightClass = 'h-[500px]',
+  legendClass = ''
 }) => {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -244,7 +246,7 @@ export const RiskMapComponent: React.FC<RiskMapProps> = ({
         </div>
       )}
 
-      <div className="absolute bottom-4 left-4 z-[500] max-w-xs rounded-xl border border-slate-700 bg-slate-900/90 p-3 shadow-2xl backdrop-blur">
+      <div className={`absolute z-[500] max-w-xs rounded-xl ${legendClass || 'bottom-4 left-4'} border border-slate-700 bg-slate-900/90 p-3 shadow-2xl backdrop-blur`}>
         <div className="mb-2 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-300">
           <span>Heat risk</span>
           <span className="text-slate-500">Deterministic</span>

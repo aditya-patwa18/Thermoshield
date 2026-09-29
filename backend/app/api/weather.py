@@ -7,8 +7,8 @@ router = APIRouter(tags=["Weather Services"])
 
 @router.get("/weather", summary="Get Current Weather Conditions")
 async def get_current_weather(
-    lat: Optional[float] = Query(None, description="Latitude"),
-    lon: Optional[float] = Query(None, description="Longitude"),
+    lat: Optional[float] = Query(None, ge=-90, le=90, description="Latitude"),
+    lon: Optional[float] = Query(None, ge=-180, le=180, description="Longitude"),
     city: Optional[str] = Query(None, description="Monitored City ID, e.g. mumbai, delhi")
 ):
     """
@@ -35,8 +35,8 @@ async def get_current_weather(
 
 @router.get("/weather/forecast", summary="Get 5-Day Multi-Variable Meteorological Forecast")
 async def get_weather_forecast(
-    lat: Optional[float] = Query(None, description="Latitude"),
-    lon: Optional[float] = Query(None, description="Longitude"),
+    lat: Optional[float] = Query(None, ge=-90, le=90, description="Latitude"),
+    lon: Optional[float] = Query(None, ge=-180, le=180, description="Longitude"),
     days: int = Query(5, ge=1, le=7, description="Forecast duration in days"),
     city: Optional[str] = Query(None, description="Monitored City ID")
 ):

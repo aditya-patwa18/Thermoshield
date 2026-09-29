@@ -4,9 +4,7 @@ import {
   Droplets, 
   Wind, 
   Sun, 
-  Activity, 
   HelpCircle, 
-  Gauge, 
   Compass,
   CloudRain
 } from 'lucide-react';

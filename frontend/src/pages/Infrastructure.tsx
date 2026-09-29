@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Building2, HeartPulse, Droplets, MapPin, Search, Phone, CheckCircle2, Navigation } from 'lucide-react';
+import { Building2, Droplets, Search, CheckCircle2 } from 'lucide-react';
 import { DashboardData } from '../types';
 import { InfrastructureList } from '../components/Infrastructure/InfrastructureList';
 

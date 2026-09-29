@@ -42,26 +42,26 @@ async def get_all_thermal(
 @router.get("/wbgt", summary="Calculate Outdoor Wet-Bulb Globe Temperature (WBGT)")
 async def get_wbgt(
     temperature: float = Query(35.0, description="Ambient temperature (°C)"),
-    humidity: float = Query(60.0, description="Relative humidity (%)"),
-    wind_speed: float = Query(1.5, description="Wind speed (m/s)"),
-    solar_radiation: float = Query(450.0, description="Solar radiation (W/m²)")
+    humidity: float = Query(60.0, ge=0, le=100, description="Relative humidity (%)"),
+    wind_speed: float = Query(1.5, ge=0, description="Wind speed (m/s)"),
+    solar_radiation: float = Query(450.0, ge=0, description="Solar radiation (W/m²)")
 ):
     return calculate_wbgt(temperature, humidity, wind_speed, solar_radiation)
 
 @router.get("/utci", summary="Calculate Universal Thermal Climate Index (UTCI)")
 async def get_utci(
     temperature: float = Query(35.0, description="Ambient temperature (°C)"),
-    humidity: float = Query(60.0, description="Relative humidity (%)"),
-    wind_speed: float = Query(1.5, description="Wind speed (m/s)"),
-    solar_radiation: float = Query(450.0, description="Solar radiation (W/m²)")
+    humidity: float = Query(60.0, ge=0, le=100, description="Relative humidity (%)"),
+    wind_speed: float = Query(1.5, ge=0, description="Wind speed (m/s)"),
+    solar_radiation: float = Query(450.0, ge=0, description="Solar radiation (W/m²)")
 ):
     return calculate_utci(temperature, humidity, wind_speed, solar_radiation)
 
 @router.get("/htsi", summary="Calculate Human Thermal Stress Index (HTSI)")
 async def get_htsi(
     temperature: float = Query(35.0, description="Ambient temperature (°C)"),
-    humidity: float = Query(60.0, description="Relative humidity (%)"),
-    wind_speed: float = Query(1.5, description="Wind speed (m/s)"),
-    solar_radiation: float = Query(450.0, description="Solar radiation (W/m²)")
+    humidity: float = Query(60.0, ge=0, le=100, description="Relative humidity (%)"),
+    wind_speed: float = Query(1.5, ge=0, description="Wind speed (m/s)"),
+    solar_radiation: float = Query(450.0, ge=0, description="Solar radiation (W/m²)")
 ):
     return calculate_htsi(temperature, humidity, wind_speed, solar_radiation)

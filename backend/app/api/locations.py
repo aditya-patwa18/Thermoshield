@@ -33,8 +33,8 @@ async def get_mumbai_wards():
 
 @router.get("/geocode", summary="Reverse Geocode Coordinates to Nearest Monitored Location")
 async def reverse_geocode(
-    lat: float = Query(..., description="Latitude"),
-    lon: float = Query(..., description="Longitude")
+    lat: float = Query(..., ge=-90, le=90, description="Latitude"),
+    lon: float = Query(..., ge=-180, le=180, description="Longitude")
 ):
     """
     Resolves a coordinate to a supported ward or nearest monitored city.

@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, 
-  Sliders, 
   RotateCcw, 
   ArrowRight, 
   CheckSquare, 
   Square, 
-  Info,
   Flame,
   ShieldCheck,
-  Building2,
   TrendingDown
 } from 'lucide-react';
 import { api } from '../../services/api';
@@ -37,7 +34,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
   const [radiationPreset, setRadiationPreset] = useState<number>(750);
 
   const [simResults, setSimResults] = useState<any>(null);
-  const [loadingSim, setLoadingSim] = useState<boolean>(false);
+  const [simError, setSimError] = useState<string | null>(null);
 
   // Administrative Intervention Levers
   const [coolingActive, setCoolingActive] = useState<boolean>(true);
@@ -50,8 +47,8 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
   // Run environmental simulation when inputs change
   useEffect(() => {
+    let cancelled = false;
     const runSim = async () => {
-      setLoadingSim(true);
       try {
         const res = await api.simulateScenario({
           base_temperature_c: weather.temperature_c,
@@ -64,18 +61,24 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
           solar_radiation_override_wm2: radiationPreset,
           pvi_score: pviScore
         });
+        if (cancelled) return;
         setSimResults(res);
+        setSimError(null);
       } catch (e) {
+        if (cancelled) return;
         console.error('Scenario simulation failed:', e);
-      } finally {
-        setLoadingSim(false);
+        setSimError('Could not run the simulation. Check that the backend is reachable and try again.');
       }
     };
     runSim();
+    return () => {
+      cancelled = true;
+    };
   }, [tempDelta, humidityDelta, windDelta, radiationPreset, weather, pviScore]);
 
   // Run administrative action simulation when levers change
   useEffect(() => {
+    let cancelled = false;
     const runIntervention = async () => {
       try {
         const res = await api.simulateInterventions({
@@ -87,12 +90,19 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
           public_alert_issued: alertIssued,
           water_points_deployed: waterPoints
         });
+        if (cancelled) return;
         setInterventionResults(res);
+        setSimError(null);
       } catch (e) {
+        if (cancelled) return;
         console.error('Intervention simulation failed:', e);
+        setSimError('Could not run the simulation. Check that the backend is reachable and try again.');
       }
     };
     runIntervention();
+    return () => {
+      cancelled = true;
+    };
   }, [coolingActive, capacityExpansion, workShifted, alertIssued, waterPoints, pviScore, currentRiskScore]);
 
   const resetDeltas = () => {
@@ -125,6 +135,12 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             <span>Reset to Current</span>
           </button>
         </div>
+
+        {simError && (
+          <div role="alert" className="rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-200">
+            {simError}
+          </div>
+        )}
 
         {/* Sliders Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -322,6 +338,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
           
           <button
             onClick={() => setCoolingActive(!coolingActive)}
+            aria-pressed={coolingActive}
             className={`p-3.5 rounded-xl border text-left flex items-start gap-3 transition-all ${
               coolingActive ? 'bg-emerald-950/40 border-emerald-500/40 text-white' : 'bg-slate-950/60 border-slate-800 text-slate-400'
             }`}
@@ -335,6 +352,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
           <button
             onClick={() => setWorkShifted(!workShifted)}
+            aria-pressed={workShifted}
             className={`p-3.5 rounded-xl border text-left flex items-start gap-3 transition-all ${
               workShifted ? 'bg-emerald-950/40 border-emerald-500/40 text-white' : 'bg-slate-950/60 border-slate-800 text-slate-400'
             }`}
@@ -348,6 +366,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
           <button
             onClick={() => setAlertIssued(!alertIssued)}
+            aria-pressed={alertIssued}
             className={`p-3.5 rounded-xl border text-left flex items-start gap-3 transition-all ${
               alertIssued ? 'bg-emerald-950/40 border-emerald-500/40 text-white' : 'bg-slate-950/60 border-slate-800 text-slate-400'
             }`}
@@ -359,6 +378,44 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             </div>
           </button>
 
+        </div>
+
+        {/* Capacity & Water Point Levers */}
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div className="space-y-2 rounded-xl border border-slate-800 bg-slate-950/60 p-3.5">
+            <div className="flex justify-between text-xs font-semibold">
+              <label htmlFor="capacity-expansion" className="text-slate-300">Shelter Capacity Expansion</label>
+              <span className="font-mono text-emerald-400">+{capacityExpansion}%</span>
+            </div>
+            <input
+              id="capacity-expansion"
+              type="range"
+              min={0}
+              max={100}
+              step={5}
+              value={capacityExpansion}
+              onChange={(e) => setCapacityExpansion(Number(e.target.value))}
+              className="w-full accent-emerald-500"
+            />
+            <div className="flex justify-between text-[10px] text-slate-500"><span>0%</span><span>+100%</span></div>
+          </div>
+          <div className="space-y-2 rounded-xl border border-slate-800 bg-slate-950/60 p-3.5">
+            <div className="flex justify-between text-xs font-semibold">
+              <label htmlFor="water-points" className="text-slate-300">Mobile Water Points Deployed</label>
+              <span className="font-mono text-sky-400">{waterPoints}</span>
+            </div>
+            <input
+              id="water-points"
+              type="range"
+              min={0}
+              max={50}
+              step={1}
+              value={waterPoints}
+              onChange={(e) => setWaterPoints(Number(e.target.value))}
+              className="w-full accent-sky-500"
+            />
+            <div className="flex justify-between text-[10px] text-slate-500"><span>0</span><span>50</span></div>
+          </div>
         </div>
 
         {/* Intervention Effects Summary */}

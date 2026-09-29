@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, TrendingUp, Sun, Droplets, Wind, ShieldAlert } from 'lucide-react';
+import { Calendar, Sun, Wind } from 'lucide-react';
 import { ForecastDay } from '../../types';
 
 interface FiveDayForecastProps {

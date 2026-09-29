@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Literal
 from pydantic import BaseModel, Field
 
 # --- Health / Status ---
@@ -51,24 +51,24 @@ class RiskResponse(BaseModel):
 
 # --- Scenario Simulator Schemas ---
 class ScenarioSimulationRequest(BaseModel):
-    base_temperature_c: float = 36.0
-    base_humidity: float = 65.0
-    base_wind_speed_ms: float = 1.8
-    base_solar_radiation_wm2: float = 600.0
-    temp_delta_c: float = 2.0
-    humidity_delta_pct: float = 10.0
-    wind_delta_ms: float = -0.5
-    solar_radiation_override_wm2: Optional[float] = None
-    pvi_score: float = 55.0
+    base_temperature_c: float = Field(36.0, ge=-60, le=60)
+    base_humidity: float = Field(65.0, ge=0, le=100)
+    base_wind_speed_ms: float = Field(1.8, ge=0, le=60)
+    base_solar_radiation_wm2: float = Field(600.0, ge=0, le=1500)
+    temp_delta_c: float = Field(2.0, ge=-30, le=30)
+    humidity_delta_pct: float = Field(10.0, ge=-100, le=100)
+    wind_delta_ms: float = Field(-0.5, ge=-60, le=60)
+    solar_radiation_override_wm2: Optional[float] = Field(None, ge=0, le=1500)
+    pvi_score: float = Field(55.0, ge=0, le=100)
 
 class HeatActionSimulationRequest(BaseModel):
-    base_pvi_score: float = 65.0
-    current_risk_score: float = 78.0
+    base_pvi_score: float = Field(65.0, ge=0, le=100)
+    current_risk_score: float = Field(78.0, ge=0, le=100)
     cooling_centers_active: bool = True
-    capacity_expansion_percent: float = 25.0
+    capacity_expansion_percent: float = Field(25.0, ge=0, le=200)
     outdoor_work_shifted: bool = True
     public_alert_issued: bool = True
-    water_points_deployed: int = 10
+    water_points_deployed: int = Field(10, ge=0, le=1000)
 
 # --- Notification Schemas ---
 class SendSMSRequest(BaseModel):
@@ -100,3 +100,9 @@ class NotificationPreviewRequest(BaseModel):
     risk_score: float = 82.0
     peak_time: str = "1:30 PM - 5:00 PM"
     wbgt: float = 32.4
+
+class UnifiedSendRequest(BaseModel):
+    channel: Literal["sms", "whatsapp", "email"] = "sms"
+    recipient: str = Field(..., min_length=1, max_length=254)
+    message: str = Field(..., min_length=1, max_length=4000)
+    subject: str = "ThermalShield Heat-Health Advisory"

@@ -1,14 +1,11 @@
 import React from 'react';
 import { 
-  ShieldAlert, 
   AlertTriangle, 
   Clock, 
   Users, 
   Info, 
-  HelpCircle,
   TrendingUp,
-  MapPin,
-  ChevronRight
+  MapPin
 } from 'lucide-react';
 import { HealthRiskIntelligence, LocationInfo, PeakPeriod, RiskDriver } from '../../types';
 

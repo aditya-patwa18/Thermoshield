@@ -28,8 +28,8 @@ async def get_risk(
 @router.get("/forecast-risk", summary="Get 5-Day Heat-Health Risk Outlook for Location")
 async def get_forecast_risk(
     city_id: str = Query("mumbai", description="Monitored City ID"),
-    lat: float = Query(19.0760, description="Latitude"),
-    lon: float = Query(72.8777, description="Longitude")
+    lat: float = Query(19.0760, ge=-90, le=90, description="Latitude"),
+    lon: float = Query(72.8777, ge=-180, le=180, description="Longitude")
 ):
     loc = location_service.get_location_by_id(city_id)
     if loc:

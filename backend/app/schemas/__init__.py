@@ -10,6 +10,7 @@ from .schemas import (
     SendWhatsAppRequest,
     SendEmailRequest,
     NotificationPreviewRequest,
+    UnifiedSendRequest,
 )
 
 __all__ = [
@@ -24,4 +25,5 @@ __all__ = [
     "SendWhatsAppRequest",
     "SendEmailRequest",
     "NotificationPreviewRequest",
+    "UnifiedSendRequest",
 ]

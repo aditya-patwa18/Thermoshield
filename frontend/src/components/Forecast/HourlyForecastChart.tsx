@@ -8,7 +8,7 @@ import {
   Tooltip, 
   CartesianGrid 
 } from 'recharts';
-import { Clock, TrendingUp, Sun, Flame, Thermometer } from 'lucide-react';
+import { Clock, TrendingUp, Flame } from 'lucide-react';
 import { HourlyForecast, PeakPeriod } from '../../types';
 
 interface HourlyForecastChartProps {

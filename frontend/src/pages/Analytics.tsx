@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { 
   BarChart3, 
-  Calendar, 
   Flame, 
-  TrendingUp, 
   AlertTriangle, 
-  Info,
-  Clock
+  Info
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 

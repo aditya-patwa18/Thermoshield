@@ -32,8 +32,8 @@ async def get_hospitals(city_id: Optional[str] = Query(None)):
 
 @router.get("/infrastructure/nearest", summary="Find Nearest Facilities from Coordinates")
 async def get_nearest(
-    lat: float = Query(19.0760, description="Latitude"),
-    lon: float = Query(72.8777, description="Longitude"),
+    lat: float = Query(19.0760, ge=-90, le=90, description="Latitude"),
+    lon: float = Query(72.8777, ge=-180, le=180, description="Longitude"),
     limit: int = Query(3, ge=1, le=10, description="Max facilities per category")
 ):
     return geospatial_service.get_nearest_facilities(lat, lon, max_items=limit)

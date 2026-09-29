@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, Calendar, Clock, Sun, Flame, Wind, Droplets } from 'lucide-react';
+import { TrendingUp, Clock, Flame, Droplets } from 'lucide-react';
 import { DashboardData } from '../types';
 import { FiveDayForecast } from '../components/Forecast/FiveDayForecast';
 import { HourlyForecastChart } from '../components/Forecast/HourlyForecastChart';

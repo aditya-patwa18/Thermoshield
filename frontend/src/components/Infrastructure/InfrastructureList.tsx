@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building2, HeartPulse, Droplets, MapPin, Navigation, Phone, CheckCircle2 } from 'lucide-react';
+import { Building2, HeartPulse, Droplets, Navigation, CheckCircle2 } from 'lucide-react';
 import { FacilitiesGroup } from '../../types';
 
 interface InfrastructureListProps {
