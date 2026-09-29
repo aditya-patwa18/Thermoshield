@@ -1,0 +1,254 @@
+{
+  "cooling_centers": [
+    {
+      "id": "cc-01",
+      "city_id": "mumbai",
+      "ward_id": "ward-a",
+      "name": "Colaba Community Heat Relief Center",
+      "address": "45 Shahid Bhagat Singh Road, Colaba, Mumbai",
+      "latitude": 18.9150,
+      "longitude": 72.8280,
+      "capacity": 150,
+      "opening_status": "Active (10:00 AM - 7:00 PM)",
+      "amenities": ["Air Conditioning", "Cold Drinking Water", "ORS Stations", "Medical First Aid", "Rest Recliners"]
+    },
+    {
+      "id": "cc-02",
+      "city_id": "mumbai",
+      "ward_id": "ward-d",
+      "name": "Grant Road Civic Cooling Shelter",
+      "address": "Opposite Grant Road Railway Station West, Mumbai",
+      "latitude": 18.9630,
+      "longitude": 72.8150,
+      "capacity": 220,
+      "opening_status": "Active (10:00 AM - 7:00 PM)",
+      "amenities": ["Air Conditioning", "Chilled Electrolytes", "Rest Beds", "Paramedic Staff"]
+    },
+    {
+      "id": "cc-03",
+      "city_id": "mumbai",
+      "ward_id": "ward-gn",
+      "name": "Dharavi Transit Camp Heat Relief Center",
+      "address": "90 Feet Road, Near Kamraj Memorial Hall, Dharavi, Mumbai",
+      "latitude": 19.0410,
+      "longitude": 72.8530,
+      "capacity": 350,
+      "opening_status": "Active 24/7 (Emergency Heat Shelter)",
+      "amenities": ["Heavy Misting Fans", "Ice Tubs", "Oral Rehydration Kiosks", "Doctor on Duty"]
+    },
+    {
+      "id": "cc-04",
+      "city_id": "mumbai",
+      "ward_id": "ward-hw",
+      "name": "Bandra West Municipal Relief Hall",
+      "address": "Hill Road, Near Bandra Police Station, Mumbai",
+      "latitude": 19.0580,
+      "longitude": 72.8340,
+      "capacity": 180,
+      "opening_status": "Active (10:00 AM - 7:00 PM)",
+      "amenities": ["Air Conditioning", "Potable Cold Water", "Senior Citizen Recliners"]
+    },
+    {
+      "id": "cc-05",
+      "city_id": "mumbai",
+      "ward_id": "ward-ke",
+      "name": "Andheri East Metro Concourse Cooling Point",
+      "address": "Andheri-Kurla Road, Near Chakala Metro, Mumbai",
+      "latitude": 19.1120,
+      "longitude": 72.8680,
+      "capacity": 250,
+      "opening_status": "Active (10:00 AM - 7:00 PM)",
+      "amenities": ["Air Conditioning", "Water Dispenser", "ORS Kits"]
+    },
+    {
+      "id": "cc-06",
+      "city_id": "mumbai",
+      "ward_id": "ward-me",
+      "name": "Govandi Shivaji Nagar Community Shelter",
+      "address": "Road No. 4, Shivaji Nagar, Govandi East, Mumbai",
+      "latitude": 19.0550,
+      "longitude": 72.9250,
+      "capacity": 300,
+      "opening_status": "Active 24/7 (High Vulnerability Zone)",
+      "amenities": ["Misting System", "Cold Water Dispenser", "Electrolyte Distribution", "Emergency Triage"]
+    },
+    {
+      "id": "cc-07",
+      "city_id": "mumbai",
+      "ward_id": "ward-rc",
+      "name": "Borivali West Town Hall Cooling Center",
+      "address": "SV Road, Near Borivali West Station, Mumbai",
+      "latitude": 19.2310,
+      "longitude": 72.8550,
+      "capacity": 200,
+      "opening_status": "Active (10:00 AM - 7:00 PM)",
+      "amenities": ["Air Conditioning", "Potable Cold Water", "Rest Chairs"]
+    },
+    {
+      "id": "cc-08",
+      "city_id": "delhi",
+      "ward_id": null,
+      "name": "Connaught Place Central Cooling Pavillion",
+      "address": "Inner Circle, Connaught Place, New Delhi",
+      "latitude": 28.6328,
+      "longitude": 77.2195,
+      "capacity": 400,
+      "opening_status": "Active (10:00 AM - 8:00 PM)",
+      "amenities": ["High-capacity Misting", "Chilled Water Dispensers", "Paramedic Tent"]
+    },
+    {
+      "id": "cc-09",
+      "city_id": "ahmedabad",
+      "ward_id": null,
+      "name": "Kalupur Heat Action Relief Shelter",
+      "address": "Near Kalupur Railway Station, Ahmedabad",
+      "latitude": 23.0305,
+      "longitude": 72.5990,
+      "capacity": 300,
+      "opening_status": "Active (10:00 AM - 7:00 PM)",
+      "amenities": ["Air Coolers", "Buttermilk/Chaas Distribution", "ORS Packets", "Resting Area"]
+    }
+  ],
+  "hospitals": [
+    {
+      "id": "hosp-01",
+      "city_id": "mumbai",
+      "ward_id": "ward-fs",
+      "name": "KEM Hospital & Emergency Medical Center",
+      "address": "Acharya Donde Marg, Parel, Mumbai",
+      "latitude": 19.0028,
+      "longitude": 72.8428,
+      "emergency_capability": "Tertiary Heat Stroke Intensive Care Unit (24/7)",
+      "approx_capacity": 1800,
+      "phone": "+91-22-24107000",
+      "has_rapid_cooling_unit": true
+    },
+    {
+      "id": "hosp-02",
+      "city_id": "mumbai",
+      "ward_id": "ward-fn",
+      "name": "Lokmanya Tilak Municipal General Hospital (Sion)",
+      "address": "Sion West, Mumbai",
+      "latitude": 19.0360,
+      "longitude": 72.8600,
+      "emergency_capability": "Level 1 Trauma & Rapid Cold-Water Immersion Tubs",
+      "approx_capacity": 1400,
+      "phone": "+91-22-24076381",
+      "has_rapid_cooling_unit": true
+    },
+    {
+      "id": "hosp-03",
+      "city_id": "mumbai",
+      "ward_id": "ward-c",
+      "name": "GT Hospital (Gokuldas Tejpal)",
+      "address": "LT Marg, Near Crawford Market, Mumbai",
+      "latitude": 18.9470,
+      "longitude": 72.8330,
+      "emergency_capability": "Heat Exhaustion Triage & Dehydration Unit",
+      "approx_capacity": 500,
+      "phone": "+91-22-22621464",
+      "has_rapid_cooling_unit": true
+    },
+    {
+      "id": "hosp-04",
+      "city_id": "mumbai",
+      "ward_id": "ward-kw",
+      "name": "Dr. R.N. Cooper Municipal General Hospital",
+      "address": "U15 Juhu Vile Parle Development Scheme, Andheri West, Mumbai",
+      "latitude": 19.1085,
+      "longitude": 72.8360,
+      "emergency_capability": "Emergency Acute Heat Care & Cardiovascular Unit",
+      "approx_capacity": 700,
+      "phone": "+91-22-26207254",
+      "has_rapid_cooling_unit": true
+    },
+    {
+      "id": "hosp-05",
+      "city_id": "mumbai",
+      "ward_id": "ward-rc",
+      "name": "Bharat Ratna Dr. Babasaheb Ambedkar Municipal Hospital",
+      "address": "Kandarpada, Dahisar/Borivali West, Mumbai",
+      "latitude": 19.2450,
+      "longitude": 72.8520,
+      "emergency_capability": "Emergency Dehydration Triage & 24/7 Casualty",
+      "approx_capacity": 450,
+      "phone": "+91-22-28932461",
+      "has_rapid_cooling_unit": false
+    },
+    {
+      "id": "hosp-06",
+      "city_id": "delhi",
+      "ward_id": null,
+      "name": "AIIMS New Delhi",
+      "address": "Ansari Nagar, New Delhi",
+      "latitude": 28.5672,
+      "longitude": 77.2100,
+      "emergency_capability": "Apex Emergency & Heat Illness Specialty Triage",
+      "approx_capacity": 2400,
+      "phone": "+91-11-26588500",
+      "has_rapid_cooling_unit": true
+    }
+  ],
+  "water_points": [
+    {
+      "id": "wp-01",
+      "city_id": "mumbai",
+      "ward_id": "ward-a",
+      "name": "Chhatrapati Shivaji Maharaj Terminus Hydration Kiosk",
+      "address": "Main Concourse Entry, CSMT, Fort, Mumbai",
+      "latitude": 18.9400,
+      "longitude": 72.8353,
+      "status": "Operational (Continuous UV Filtered Chilled Water)"
+    },
+    {
+      "id": "wp-02",
+      "city_id": "mumbai",
+      "ward_id": "ward-gn",
+      "name": "Dharavi Junction Water Kiosk",
+      "address": "Sion-Bandra Link Road Junction, Dharavi, Mumbai",
+      "latitude": 19.0435,
+      "longitude": 72.8570,
+      "status": "Operational (Free Potable Water & ORS Sachets)"
+    },
+    {
+      "id": "wp-03",
+      "city_id": "mumbai",
+      "ward_id": "ward-he",
+      "name": "Bandra Terminus Auto-Rickshaw Stand Hydration Post",
+      "address": "Near Booking Office, Bandra East, Mumbai",
+      "latitude": 19.0620,
+      "longitude": 72.8500,
+      "status": "Operational (Chilled Water Dispenser for Transit Workers)"
+    },
+    {
+      "id": "wp-04",
+      "city_id": "mumbai",
+      "ward_id": "ward-ke",
+      "name": "Chakala MIDC Industrial Worker Water Post",
+      "address": "MIDC Central Road, Andheri East, Mumbai",
+      "latitude": 19.1200,
+      "longitude": 72.8750,
+      "status": "Operational (Filtered Cold Water)"
+    },
+    {
+      "id": "wp-05",
+      "city_id": "mumbai",
+      "ward_id": "ward-me",
+      "name": "Mankhurd Station South Side Water Station",
+      "address": "Station Road, Mankhurd East, Mumbai",
+      "latitude": 19.0520,
+      "longitude": 72.9320,
+      "status": "Operational (High-capacity RO Plant)"
+    },
+    {
+      "id": "wp-06",
+      "city_id": "delhi",
+      "ward_id": null,
+      "name": "Kashmere Gate ISBT Water Kiosk",
+      "address": "Inter-State Bus Terminal, Kashmere Gate, Delhi",
+      "latitude": 28.6675,
+      "longitude": 77.2285,
+      "status": "Operational (Chilled Water Dispenser)"
+    }
+  ]
+}

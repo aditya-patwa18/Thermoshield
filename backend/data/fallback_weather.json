@@ -1,0 +1,119 @@
+{
+  "mumbai": {
+    "city": "Mumbai",
+    "latitude": 19.0760,
+    "longitude": 72.8777,
+    "source": "Prototype fallback dataset",
+    "is_fallback": true,
+    "current": {
+      "temperature_c": 36.8,
+      "relative_humidity": 76.0,
+      "wind_speed_kmh": 6.8,
+      "wind_speed_ms": 1.9,
+      "wind_direction_deg": 240,
+      "solar_radiation_wm2": 780.0,
+      "cloud_cover_percent": 15,
+      "surface_pressure_hpa": 1008.2,
+      "dew_point_c": 31.8,
+      "condition": "Hot & Highly Humid",
+      "timestamp": "2026-09-29T14:00:00Z"
+    },
+    "daily": [
+      { "date": "2026-09-29", "temp_max": 37.2, "temp_min": 28.5, "humidity_avg": 75, "wind_speed_avg": 2.1, "solar_radiation_max": 820 },
+      { "date": "2026-09-30", "temp_max": 38.0, "temp_min": 29.2, "humidity_avg": 78, "wind_speed_avg": 1.8, "solar_radiation_max": 850 },
+      { "date": "2026-10-01", "temp_max": 38.6, "temp_min": 29.8, "humidity_avg": 80, "wind_speed_avg": 1.5, "solar_radiation_max": 880 },
+      { "date": "2026-10-02", "temp_max": 39.1, "temp_min": 30.0, "humidity_avg": 79, "wind_speed_avg": 1.6, "solar_radiation_max": 870 },
+      { "date": "2026-10-03", "temp_max": 38.2, "temp_min": 29.0, "humidity_avg": 76, "wind_speed_avg": 2.0, "solar_radiation_max": 830 }
+    ],
+    "hourly_24h": [
+      { "hour": "00:00", "temperature_c": 29.5, "relative_humidity": 86, "wind_speed_ms": 1.8, "solar_radiation_wm2": 0 },
+      { "hour": "03:00", "temperature_c": 28.8, "relative_humidity": 88, "wind_speed_ms": 1.5, "solar_radiation_wm2": 0 },
+      { "hour": "06:00", "temperature_c": 29.0, "relative_humidity": 85, "wind_speed_ms": 1.6, "solar_radiation_wm2": 45 },
+      { "hour": "09:00", "temperature_c": 32.4, "relative_humidity": 78, "wind_speed_ms": 2.1, "solar_radiation_wm2": 480 },
+      { "hour": "12:00", "temperature_c": 35.8, "relative_humidity": 75, "wind_speed_ms": 2.3, "solar_radiation_wm2": 760 },
+      { "hour": "14:00", "temperature_c": 37.2, "relative_humidity": 76, "wind_speed_ms": 1.9, "solar_radiation_wm2": 820 },
+      { "hour": "15:00", "temperature_c": 37.0, "relative_humidity": 77, "wind_speed_ms": 1.8, "solar_radiation_wm2": 780 },
+      { "hour": "17:00", "temperature_c": 35.2, "relative_humidity": 79, "wind_speed_ms": 2.2, "solar_radiation_wm2": 390 },
+      { "hour": "18:00", "temperature_c": 33.6, "relative_humidity": 82, "wind_speed_ms": 2.4, "solar_radiation_wm2": 110 },
+      { "hour": "21:00", "temperature_c": 31.0, "relative_humidity": 84, "wind_speed_ms": 2.0, "solar_radiation_wm2": 0 }
+    ]
+  },
+  "delhi": {
+    "city": "Delhi",
+    "latitude": 28.6139,
+    "longitude": 77.2090,
+    "source": "Prototype fallback dataset",
+    "is_fallback": true,
+    "current": {
+      "temperature_c": 43.5,
+      "relative_humidity": 38.0,
+      "wind_speed_kmh": 8.5,
+      "wind_speed_ms": 2.4,
+      "wind_direction_deg": 290,
+      "solar_radiation_wm2": 890.0,
+      "cloud_cover_percent": 5,
+      "surface_pressure_hpa": 1002.5,
+      "dew_point_c": 25.4,
+      "condition": "Severe Dry Heatwave",
+      "timestamp": "2026-09-29T14:00:00Z"
+    },
+    "daily": [
+      { "date": "2026-09-29", "temp_max": 44.0, "temp_min": 31.5, "humidity_avg": 36, "wind_speed_avg": 2.5, "solar_radiation_max": 910 },
+      { "date": "2026-09-30", "temp_max": 44.8, "temp_min": 32.0, "humidity_avg": 34, "wind_speed_avg": 2.8, "solar_radiation_max": 930 },
+      { "date": "2026-10-01", "temp_max": 45.2, "temp_min": 32.5, "humidity_avg": 35, "wind_speed_avg": 2.6, "solar_radiation_max": 940 },
+      { "date": "2026-10-02", "temp_max": 44.6, "temp_min": 31.8, "humidity_avg": 38, "wind_speed_avg": 2.4, "solar_radiation_max": 900 },
+      { "date": "2026-10-03", "temp_max": 43.8, "temp_min": 31.0, "humidity_avg": 40, "wind_speed_avg": 2.2, "solar_radiation_max": 880 }
+    ],
+    "hourly_24h": [
+      { "hour": "00:00", "temperature_c": 33.5, "relative_humidity": 48, "wind_speed_ms": 2.0, "solar_radiation_wm2": 0 },
+      { "hour": "03:00", "temperature_c": 32.0, "relative_humidity": 52, "wind_speed_ms": 1.8, "solar_radiation_wm2": 0 },
+      { "hour": "06:00", "temperature_c": 32.5, "relative_humidity": 50, "wind_speed_ms": 2.1, "solar_radiation_wm2": 60 },
+      { "hour": "09:00", "temperature_c": 37.8, "relative_humidity": 42, "wind_speed_ms": 2.5, "solar_radiation_wm2": 550 },
+      { "hour": "12:00", "temperature_c": 42.0, "relative_humidity": 35, "wind_speed_ms": 2.8, "solar_radiation_wm2": 850 },
+      { "hour": "14:00", "temperature_c": 44.0, "relative_humidity": 32, "wind_speed_ms": 2.7, "solar_radiation_wm2": 910 },
+      { "hour": "15:00", "temperature_c": 43.8, "relative_humidity": 33, "wind_speed_ms": 2.6, "solar_radiation_wm2": 870 },
+      { "hour": "17:00", "temperature_c": 41.5, "relative_humidity": 37, "wind_speed_ms": 2.3, "solar_radiation_wm2": 420 },
+      { "hour": "18:00", "temperature_c": 39.2, "relative_humidity": 40, "wind_speed_ms": 2.2, "solar_radiation_wm2": 120 },
+      { "hour": "21:00", "temperature_c": 36.0, "relative_humidity": 44, "wind_speed_ms": 2.1, "solar_radiation_wm2": 0 }
+    ]
+  },
+  "ahmedabad": {
+    "city": "Ahmedabad",
+    "latitude": 23.0225,
+    "longitude": 72.5714,
+    "source": "Prototype fallback dataset",
+    "is_fallback": true,
+    "current": {
+      "temperature_c": 42.2,
+      "relative_humidity": 45.0,
+      "wind_speed_kmh": 7.2,
+      "wind_speed_ms": 2.0,
+      "wind_direction_deg": 270,
+      "solar_radiation_wm2": 850.0,
+      "cloud_cover_percent": 8,
+      "surface_pressure_hpa": 1005.1,
+      "dew_point_c": 27.5,
+      "condition": "Severe Heat",
+      "timestamp": "2026-09-29T14:00:00Z"
+    },
+    "daily": [
+      { "date": "2026-09-29", "temp_max": 42.8, "temp_min": 30.2, "humidity_avg": 44, "wind_speed_avg": 2.1, "solar_radiation_max": 870 },
+      { "date": "2026-09-30", "temp_max": 43.5, "temp_min": 30.8, "humidity_avg": 42, "wind_speed_avg": 2.3, "solar_radiation_max": 890 },
+      { "date": "2026-10-01", "temp_max": 44.0, "temp_min": 31.2, "humidity_avg": 43, "wind_speed_avg": 2.2, "solar_radiation_max": 900 },
+      { "date": "2026-10-02", "temp_max": 43.2, "temp_min": 30.5, "humidity_avg": 45, "wind_speed_avg": 2.0, "solar_radiation_max": 860 },
+      { "date": "2026-10-03", "temp_max": 42.0, "temp_min": 29.8, "humidity_avg": 48, "wind_speed_avg": 1.9, "solar_radiation_max": 840 }
+    ],
+    "hourly_24h": [
+      { "hour": "00:00", "temperature_c": 31.5, "relative_humidity": 55, "wind_speed_ms": 1.8, "solar_radiation_wm2": 0 },
+      { "hour": "03:00", "temperature_c": 30.2, "relative_humidity": 58, "wind_speed_ms": 1.6, "solar_radiation_wm2": 0 },
+      { "hour": "06:00", "temperature_c": 30.8, "relative_humidity": 56, "wind_speed_ms": 1.9, "solar_radiation_wm2": 55 },
+      { "hour": "09:00", "temperature_c": 36.0, "relative_humidity": 48, "wind_speed_ms": 2.2, "solar_radiation_wm2": 510 },
+      { "hour": "12:00", "temperature_c": 40.5, "relative_humidity": 42, "wind_speed_ms": 2.4, "solar_radiation_wm2": 800 },
+      { "hour": "14:00", "temperature_c": 42.8, "relative_humidity": 39, "wind_speed_ms": 2.3, "solar_radiation_wm2": 870 },
+      { "hour": "15:00", "temperature_c": 42.4, "relative_humidity": 40, "wind_speed_ms": 2.2, "solar_radiation_wm2": 830 },
+      { "hour": "17:00", "temperature_c": 39.8, "relative_humidity": 45, "wind_speed_ms": 2.0, "solar_radiation_wm2": 380 },
+      { "hour": "18:00", "temperature_c": 37.5, "relative_humidity": 49, "wind_speed_ms": 1.9, "solar_radiation_wm2": 100 },
+      { "hour": "21:00", "temperature_c": 34.0, "relative_humidity": 52, "wind_speed_ms": 1.8, "solar_radiation_wm2": 0 }
+    ]
+  }
+}

@@ -1,0 +1,730 @@
+[
+  {
+    "id": "mumbai",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "country": "India",
+    "latitude": 19.0760,
+    "longitude": 72.8777,
+    "population": 12442373,
+    "has_ward_data": true,
+    "demographics": {
+      "population_density": 21000,
+      "elderly_percent": 9.2,
+      "children_percent": 7.8,
+      "outdoor_worker_percent": 34.5,
+      "poverty_rate": 26.0
+    },
+    "infrastructure": {
+      "cooling_centers": 28,
+      "hospitals": 62,
+      "water_points": 140,
+      "ambulances": 95
+    },
+    "gis": {
+      "elevation_m": 14,
+      "coastal_influence": true,
+      "urban_heat_island_intensity": 3.8
+    }
+  },
+  {
+    "id": "delhi",
+    "city": "Delhi",
+    "state": "Delhi",
+    "country": "India",
+    "latitude": 28.6139,
+    "longitude": 77.2090,
+    "population": 16787941,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 11320,
+      "elderly_percent": 8.6,
+      "children_percent": 8.9,
+      "outdoor_worker_percent": 38.0,
+      "poverty_rate": 22.5
+    },
+    "infrastructure": {
+      "cooling_centers": 35,
+      "hospitals": 84,
+      "water_points": 190,
+      "ambulances": 140
+    },
+    "gis": {
+      "elevation_m": 216,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 4.5
+    }
+  },
+  {
+    "id": "ahmedabad",
+    "city": "Ahmedabad",
+    "state": "Gujarat",
+    "country": "India",
+    "latitude": 23.0225,
+    "longitude": 72.5714,
+    "population": 5577940,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 12000,
+      "elderly_percent": 9.4,
+      "children_percent": 7.9,
+      "outdoor_worker_percent": 36.2,
+      "poverty_rate": 24.0
+    },
+    "infrastructure": {
+      "cooling_centers": 24,
+      "hospitals": 48,
+      "water_points": 115,
+      "ambulances": 60
+    },
+    "gis": {
+      "elevation_m": 53,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.9
+    }
+  },
+  {
+    "id": "jaipur",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "country": "India",
+    "latitude": 26.9124,
+    "longitude": 75.7873,
+    "population": 3046163,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 6500,
+      "elderly_percent": 8.7,
+      "children_percent": 8.5,
+      "outdoor_worker_percent": 35.0,
+      "poverty_rate": 21.0
+    },
+    "infrastructure": {
+      "cooling_centers": 16,
+      "hospitals": 36,
+      "water_points": 80,
+      "ambulances": 45
+    },
+    "gis": {
+      "elevation_m": 431,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.2
+    }
+  },
+  {
+    "id": "lucknow",
+    "city": "Lucknow",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "latitude": 26.8467,
+    "longitude": 80.9462,
+    "population": 2817105,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 8100,
+      "elderly_percent": 9.1,
+      "children_percent": 9.2,
+      "outdoor_worker_percent": 37.5,
+      "poverty_rate": 25.0
+    },
+    "infrastructure": {
+      "cooling_centers": 14,
+      "hospitals": 34,
+      "water_points": 75,
+      "ambulances": 40
+    },
+    "gis": {
+      "elevation_m": 123,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.4
+    }
+  },
+  {
+    "id": "patna",
+    "city": "Patna",
+    "state": "Bihar",
+    "country": "India",
+    "latitude": 25.5941,
+    "longitude": 85.1376,
+    "population": 1684222,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 18200,
+      "elderly_percent": 7.9,
+      "children_percent": 10.1,
+      "outdoor_worker_percent": 41.0,
+      "poverty_rate": 31.0
+    },
+    "infrastructure": {
+      "cooling_centers": 10,
+      "hospitals": 28,
+      "water_points": 60,
+      "ambulances": 32
+    },
+    "gis": {
+      "elevation_m": 53,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.6
+    }
+  },
+  {
+    "id": "kolkata",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "country": "India",
+    "latitude": 22.5726,
+    "longitude": 88.3639,
+    "population": 4496694,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 24000,
+      "elderly_percent": 11.5,
+      "children_percent": 6.8,
+      "outdoor_worker_percent": 33.0,
+      "poverty_rate": 23.0
+    },
+    "infrastructure": {
+      "cooling_centers": 20,
+      "hospitals": 52,
+      "water_points": 120,
+      "ambulances": 70
+    },
+    "gis": {
+      "elevation_m": 9,
+      "coastal_influence": true,
+      "urban_heat_island_intensity": 4.1
+    }
+  },
+  {
+    "id": "bhubaneswar",
+    "city": "Bhubaneswar",
+    "state": "Odisha",
+    "country": "India",
+    "latitude": 20.2961,
+    "longitude": 85.8245,
+    "population": 843402,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 6200,
+      "elderly_percent": 8.4,
+      "children_percent": 8.0,
+      "outdoor_worker_percent": 32.0,
+      "poverty_rate": 19.5
+    },
+    "infrastructure": {
+      "cooling_centers": 12,
+      "hospitals": 26,
+      "water_points": 65,
+      "ambulances": 30
+    },
+    "gis": {
+      "elevation_m": 45,
+      "coastal_influence": true,
+      "urban_heat_island_intensity": 2.8
+    }
+  },
+  {
+    "id": "nagpur",
+    "city": "Nagpur",
+    "state": "Maharashtra",
+    "country": "India",
+    "latitude": 21.1458,
+    "longitude": 79.0882,
+    "population": 2405665,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 11000,
+      "elderly_percent": 9.8,
+      "children_percent": 7.6,
+      "outdoor_worker_percent": 36.0,
+      "poverty_rate": 21.5
+    },
+    "infrastructure": {
+      "cooling_centers": 18,
+      "hospitals": 38,
+      "water_points": 85,
+      "ambulances": 45
+    },
+    "gis": {
+      "elevation_m": 310,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.7
+    }
+  },
+  {
+    "id": "pune",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "country": "India",
+    "latitude": 18.5204,
+    "longitude": 73.8567,
+    "population": 3124458,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 9400,
+      "elderly_percent": 10.2,
+      "children_percent": 7.4,
+      "outdoor_worker_percent": 27.5,
+      "poverty_rate": 17.0
+    },
+    "infrastructure": {
+      "cooling_centers": 22,
+      "hospitals": 50,
+      "water_points": 95,
+      "ambulances": 60
+    },
+    "gis": {
+      "elevation_m": 560,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.1
+    }
+  },
+  {
+    "id": "nashik",
+    "city": "Nashik",
+    "state": "Maharashtra",
+    "country": "India",
+    "latitude": 19.9975,
+    "longitude": 73.7898,
+    "population": 1486053,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 5600,
+      "elderly_percent": 9.0,
+      "children_percent": 8.1,
+      "outdoor_worker_percent": 33.5,
+      "poverty_rate": 18.0
+    },
+    "infrastructure": {
+      "cooling_centers": 11,
+      "hospitals": 24,
+      "water_points": 50,
+      "ambulances": 25
+    },
+    "gis": {
+      "elevation_m": 600,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 2.5
+    }
+  },
+  {
+    "id": "surat",
+    "city": "Surat",
+    "state": "Gujarat",
+    "country": "India",
+    "latitude": 21.1702,
+    "longitude": 72.8311,
+    "population": 4466826,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 13700,
+      "elderly_percent": 7.5,
+      "children_percent": 8.8,
+      "outdoor_worker_percent": 39.0,
+      "poverty_rate": 20.0
+    },
+    "infrastructure": {
+      "cooling_centers": 21,
+      "hospitals": 42,
+      "water_points": 110,
+      "ambulances": 55
+    },
+    "gis": {
+      "elevation_m": 13,
+      "coastal_influence": true,
+      "urban_heat_island_intensity": 3.5
+    }
+  },
+  {
+    "id": "hyderabad",
+    "city": "Hyderabad",
+    "state": "Telangana",
+    "country": "India",
+    "latitude": 17.3850,
+    "longitude": 78.4867,
+    "population": 6809970,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 18000,
+      "elderly_percent": 8.8,
+      "children_percent": 8.2,
+      "outdoor_worker_percent": 31.0,
+      "poverty_rate": 19.0
+    },
+    "infrastructure": {
+      "cooling_centers": 30,
+      "hospitals": 65,
+      "water_points": 150,
+      "ambulances": 85
+    },
+    "gis": {
+      "elevation_m": 542,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.7
+    }
+  },
+  {
+    "id": "bengaluru",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "country": "India",
+    "latitude": 12.9716,
+    "longitude": 77.5946,
+    "population": 8443675,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 12000,
+      "elderly_percent": 8.2,
+      "children_percent": 7.9,
+      "outdoor_worker_percent": 24.5,
+      "poverty_rate": 15.0
+    },
+    "infrastructure": {
+      "cooling_centers": 32,
+      "hospitals": 75,
+      "water_points": 160,
+      "ambulances": 110
+    },
+    "gis": {
+      "elevation_m": 920,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 2.9
+    }
+  },
+  {
+    "id": "chennai",
+    "city": "Chennai",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "latitude": 13.0827,
+    "longitude": 80.2707,
+    "population": 7088000,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 17000,
+      "elderly_percent": 10.4,
+      "children_percent": 7.5,
+      "outdoor_worker_percent": 32.5,
+      "poverty_rate": 18.5
+    },
+    "infrastructure": {
+      "cooling_centers": 26,
+      "hospitals": 58,
+      "water_points": 135,
+      "ambulances": 80
+    },
+    "gis": {
+      "elevation_m": 6,
+      "coastal_influence": true,
+      "urban_heat_island_intensity": 3.6
+    }
+  },
+  {
+    "id": "bhopal",
+    "city": "Bhopal",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "latitude": 23.2599,
+    "longitude": 77.4126,
+    "population": 1798218,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 6300,
+      "elderly_percent": 8.8,
+      "children_percent": 8.7,
+      "outdoor_worker_percent": 34.0,
+      "poverty_rate": 22.0
+    },
+    "infrastructure": {
+      "cooling_centers": 13,
+      "hospitals": 28,
+      "water_points": 65,
+      "ambulances": 35
+    },
+    "gis": {
+      "elevation_m": 527,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.0
+    }
+  },
+  {
+    "id": "indore",
+    "city": "Indore",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "latitude": 22.7196,
+    "longitude": 75.8577,
+    "population": 1964086,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 9800,
+      "elderly_percent": 8.5,
+      "children_percent": 8.3,
+      "outdoor_worker_percent": 33.0,
+      "poverty_rate": 19.0
+    },
+    "infrastructure": {
+      "cooling_centers": 15,
+      "hospitals": 32,
+      "water_points": 70,
+      "ambulances": 40
+    },
+    "gis": {
+      "elevation_m": 553,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.2
+    }
+  },
+  {
+    "id": "chandigarh",
+    "city": "Chandigarh",
+    "state": "Chandigarh",
+    "country": "India",
+    "latitude": 30.7333,
+    "longitude": 76.7794,
+    "population": 1055450,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 9250,
+      "elderly_percent": 9.6,
+      "children_percent": 7.8,
+      "outdoor_worker_percent": 25.0,
+      "poverty_rate": 12.0
+    },
+    "infrastructure": {
+      "cooling_centers": 15,
+      "hospitals": 25,
+      "water_points": 60,
+      "ambulances": 35
+    },
+    "gis": {
+      "elevation_m": 321,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 2.2
+    }
+  },
+  {
+    "id": "amritsar",
+    "city": "Amritsar",
+    "state": "Punjab",
+    "country": "India",
+    "latitude": 31.6340,
+    "longitude": 74.8723,
+    "population": 1132383,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 8200,
+      "elderly_percent": 9.9,
+      "children_percent": 8.1,
+      "outdoor_worker_percent": 32.0,
+      "poverty_rate": 17.0
+    },
+    "infrastructure": {
+      "cooling_centers": 12,
+      "hospitals": 24,
+      "water_points": 55,
+      "ambulances": 28
+    },
+    "gis": {
+      "elevation_m": 234,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 2.9
+    }
+  },
+  {
+    "id": "kanpur",
+    "city": "Kanpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "latitude": 26.4499,
+    "longitude": 80.3319,
+    "population": 2765348,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 10500,
+      "elderly_percent": 8.8,
+      "children_percent": 8.9,
+      "outdoor_worker_percent": 40.0,
+      "poverty_rate": 28.0
+    },
+    "infrastructure": {
+      "cooling_centers": 14,
+      "hospitals": 35,
+      "water_points": 80,
+      "ambulances": 40
+    },
+    "gis": {
+      "elevation_m": 126,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.8
+    }
+  },
+  {
+    "id": "varanasi",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "latitude": 25.3176,
+    "longitude": 82.9739,
+    "population": 1198491,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 14500,
+      "elderly_percent": 9.3,
+      "children_percent": 8.4,
+      "outdoor_worker_percent": 38.5,
+      "poverty_rate": 26.5
+    },
+    "infrastructure": {
+      "cooling_centers": 11,
+      "hospitals": 26,
+      "water_points": 58,
+      "ambulances": 30
+    },
+    "gis": {
+      "elevation_m": 80,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.3
+    }
+  },
+  {
+    "id": "ranchi",
+    "city": "Ranchi",
+    "state": "Jharkhand",
+    "country": "India",
+    "latitude": 23.3441,
+    "longitude": 85.3096,
+    "population": 1073427,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 6100,
+      "elderly_percent": 8.0,
+      "children_percent": 9.1,
+      "outdoor_worker_percent": 35.5,
+      "poverty_rate": 27.0
+    },
+    "infrastructure": {
+      "cooling_centers": 9,
+      "hospitals": 22,
+      "water_points": 50,
+      "ambulances": 25
+    },
+    "gis": {
+      "elevation_m": 651,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 2.4
+    }
+  },
+  {
+    "id": "raipur",
+    "city": "Raipur",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "latitude": 21.2514,
+    "longitude": 81.6296,
+    "population": 1010087,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 5800,
+      "elderly_percent": 7.8,
+      "children_percent": 9.0,
+      "outdoor_worker_percent": 37.0,
+      "poverty_rate": 25.5
+    },
+    "infrastructure": {
+      "cooling_centers": 10,
+      "hospitals": 23,
+      "water_points": 52,
+      "ambulances": 26
+    },
+    "gis": {
+      "elevation_m": 298,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.1
+    }
+  },
+  {
+    "id": "visakhapatnam",
+    "city": "Visakhapatnam",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "latitude": 17.6868,
+    "longitude": 83.2185,
+    "population": 1728128,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 7900,
+      "elderly_percent": 9.2,
+      "children_percent": 7.8,
+      "outdoor_worker_percent": 31.5,
+      "poverty_rate": 18.0
+    },
+    "infrastructure": {
+      "cooling_centers": 14,
+      "hospitals": 30,
+      "water_points": 72,
+      "ambulances": 38
+    },
+    "gis": {
+      "elevation_m": 45,
+      "coastal_influence": true,
+      "urban_heat_island_intensity": 2.9
+    }
+  },
+  {
+    "id": "gurugram",
+    "city": "Gurugram",
+    "state": "Haryana",
+    "country": "India",
+    "latitude": 28.4595,
+    "longitude": 77.0266,
+    "population": 876969,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 8500,
+      "elderly_percent": 7.6,
+      "children_percent": 8.0,
+      "outdoor_worker_percent": 34.0,
+      "poverty_rate": 16.0
+    },
+    "infrastructure": {
+      "cooling_centers": 12,
+      "hospitals": 35,
+      "water_points": 65,
+      "ambulances": 40
+    },
+    "gis": {
+      "elevation_m": 219,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 4.2
+    }
+  },
+  {
+    "id": "noida",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "latitude": 28.5355,
+    "longitude": 77.3910,
+    "population": 637272,
+    "has_ward_data": false,
+    "demographics": {
+      "population_density": 7800,
+      "elderly_percent": 7.4,
+      "children_percent": 8.2,
+      "outdoor_worker_percent": 35.0,
+      "poverty_rate": 17.5
+    },
+    "infrastructure": {
+      "cooling_centers": 10,
+      "hospitals": 28,
+      "water_points": 58,
+      "ambulances": 34
+    },
+    "gis": {
+      "elevation_m": 200,
+      "coastal_influence": false,
+      "urban_heat_island_intensity": 3.9
+    }
+  }
+]
