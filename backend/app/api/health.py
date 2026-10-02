@@ -12,7 +12,7 @@ async def get_health():
     Returns actual live operational status of backend, weather connection,
     Google Maps configuration, and notification integrations.
     """
-    notif_status = notification_service.get_status()
+    notif_status = await notification_service.get_status()
     return {
         "status": "online",
         "version": settings.VERSION,

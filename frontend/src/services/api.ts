@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { DashboardData, SystemStatus, ActiveAlert, FacilitiesGroup } from '../types';
+import { DashboardData, SystemStatus, ActiveAlert, FacilitiesGroup, HeatFieldData, NotificationResult } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -52,6 +52,11 @@ export const api = {
       ? `/dashboard?lat=${lat}&lon=${lon}&name=${encodeURIComponent(name)}`
       : `/dashboard?lat=${lat}&lon=${lon}`;
     const res = await client.get<DashboardData>(url);
+    return res.data;
+  },
+
+  getHeatField: async (): Promise<HeatFieldData> => {
+    const res = await client.get<HeatFieldData>('/heat-field');
     return res.data;
   },
 
@@ -113,8 +118,8 @@ export const api = {
     recipient: string,
     message: string,
     subject?: string
-  ) => {
-    const res = await client.post('/alerts/send', {
+  ): Promise<NotificationResult> => {
+    const res = await client.post<NotificationResult>('/alerts/send', {
       channel,
       recipient,
       message,

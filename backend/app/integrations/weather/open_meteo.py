@@ -1,5 +1,5 @@
 import httpx
-from typing import Dict, Any
+from typing import Dict, Any, List, Tuple
 from .base import WeatherProvider
 
 class OpenMeteoProvider(WeatherProvider):
@@ -54,6 +54,36 @@ class OpenMeteoProvider(WeatherProvider):
             "timestamp": current.get("time", ""),
             "provider": "Open-Meteo"
         }
+
+    async def get_current_many(self, coords: List[Tuple[float, float]]) -> List[Dict[str, Any]]:
+        # Open-Meteo accepts comma-separated coordinates and answers with one entry per point.
+        params = {
+            "latitude": ",".join(str(lat) for lat, _ in coords),
+            "longitude": ",".join(str(lon) for _, lon in coords),
+            "current": "temperature_2m,relative_humidity_2m,wind_speed_10m,direct_normal_irradiance",
+            "timezone": "auto"
+        }
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            response = await client.get(self.BASE_URL, params=params)
+            response.raise_for_status()
+            data = response.json()
+
+        points = data if isinstance(data, list) else [data]
+        if len(points) != len(coords):
+            raise ValueError(f"Open-Meteo returned {len(points)} points for {len(coords)} coordinates")
+
+        results = []
+        for point in points:
+            current = point["current"]
+            results.append({
+                "temperature_c": float(current["temperature_2m"]),
+                "relative_humidity": float(current["relative_humidity_2m"]),
+                "wind_speed_ms": round(float(current["wind_speed_10m"]) / 3.6, 2),
+                "solar_radiation_wm2": round(float(current.get("direct_normal_irradiance") or 0.0), 1),
+                "timestamp": current.get("time", ""),
+                "provider": "Open-Meteo"
+            })
+        return results
 
     async def get_forecast(self, lat: float, lon: float, days: int = 5) -> Dict[str, Any]:
         params = {

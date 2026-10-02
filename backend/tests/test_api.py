@@ -155,3 +155,44 @@ def test_alert_send_valid_payloads_dispatch_to_service(payload, monkeypatch):
     assert res.status_code == 200
     assert res.json()["status"] == "stubbed"
     assert calls == [(payload["recipient"], payload["message"])]
+
+
+# --- National heat field (feeds the 3D overview) ---
+
+def test_heat_field_reports_heat_stress_for_every_monitored_city(monkeypatch):
+    from app.services.heat_field_service import heat_field_service
+
+    async def fake_current_many(coords):
+        return [
+            {"temperature_c": 30.0 + i % 12, "relative_humidity": 60.0, "wind_speed_ms": 2.0, "solar_radiation_wm2": 500.0}
+            for i, _ in enumerate(coords)
+        ]
+
+    monkeypatch.setattr(heat_field_service.provider, "get_current_many", fake_current_many)
+    monkeypatch.setattr(heat_field_service, "_cache", None)
+
+    data = client.get("/api/heat-field").json()
+    assert data["is_live"] is True
+    assert len(data["cities"]) >= 25
+    mumbai = next(c for c in data["cities"] if c["id"] == "mumbai")
+    assert mumbai["temperature_c"] == 30.0
+    assert 0 <= mumbai["htsi"] <= 100
+    assert mumbai["htsi_category"] in {"Low", "Moderate", "High", "Very High", "Extreme"}
+    assert {"city", "state", "latitude", "longitude", "relative_humidity"} <= mumbai.keys()
+
+
+def test_heat_field_does_not_invent_values_when_weather_is_unavailable(monkeypatch):
+    from app.services.heat_field_service import heat_field_service
+
+    async def failing_current_many(coords):
+        raise RuntimeError("weather provider down")
+
+    monkeypatch.setattr(heat_field_service.provider, "get_current_many", failing_current_many)
+    monkeypatch.setattr(heat_field_service, "_cache", None)
+
+    res = client.get("/api/heat-field")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["is_live"] is False
+    assert len(data["cities"]) >= 25
+    assert all(c["htsi"] is None and c["temperature_c"] is None for c in data["cities"])

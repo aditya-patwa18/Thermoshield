@@ -175,10 +175,10 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold tracking-[-0.08em] text-white sm:text-xl">THERMALSHIELD</h1>
+              <h1 className="font-display text-lg text-white sm:text-xl">ThermalShield</h1>
             </div>
-            <div className="text-[9px] font-medium uppercase tracking-[0.22em] text-slate-400">
-              Climate → Health → Action
+            <div className="text-xs text-slate-400">
+              Heat-health early warning
             </div>
           </div>
         </div>
@@ -294,7 +294,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="flex items-center gap-3 text-right">
-          <span className="inline-flex items-center rounded-full border border-slate-700 bg-slate-900 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">
+          <span className="inline-flex items-center rounded-full border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs text-slate-300">
             Prototype
           </span>
           <span className="text-xs text-slate-400 sm:text-sm">{formattedDate}</span>

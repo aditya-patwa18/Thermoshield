@@ -11,7 +11,7 @@ import {
   X
 } from 'lucide-react';
 import { api } from '../../services/api';
-import { SystemStatus } from '../../types';
+import { NotificationResult, SystemStatus } from '../../types';
 
 interface AlertModalProps {
   isOpen: boolean;
@@ -41,7 +41,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   
   const [previewData, setPreviewData] = useState<any>(null);
   const [sending, setSending] = useState<boolean>(false);
-  const [sendResult, setSendResult] = useState<any>(null);
+  const [sendResult, setSendResult] = useState<NotificationResult | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
 
   const changeChannel = (channel: 'sms' | 'whatsapp' | 'email') => {
@@ -153,6 +153,8 @@ export const AlertModal: React.FC<AlertModalProps> = ({
     return false;
   };
 
+  const smsTrialTemplate = activeChannel === 'sms' ? systemStatus?.notifications?.sms?.trial_template : null;
+
   const normalizedRecipient = recipient.trim().replace(/[\s()-]/g, '');
   const isRecipientValid = activeChannel === 'email'
     ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedRecipient)
@@ -180,10 +182,10 @@ export const AlertModal: React.FC<AlertModalProps> = ({
             </div>
             <div>
               <h3 className="text-base font-bold text-white">
-                Multi-Channel Emergency Alert Dispatcher
+                Send a heat alert
               </h3>
               <p className="text-xs text-slate-400">
-                Targeted civic warning broadcast for {locationName}
+                Warning for {locationName}
               </p>
             </div>
           </div>
@@ -201,8 +203,8 @@ export const AlertModal: React.FC<AlertModalProps> = ({
           
           {/* Template Selection */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-              Select Warning Template
+            <label className="block text-sm font-medium text-slate-200 mb-2">
+              Warning template
             </label>
             <select
               value={selectedTemplate}
@@ -220,8 +222,8 @@ export const AlertModal: React.FC<AlertModalProps> = ({
 
           {/* Delivery Channel Tabs */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-              Select Delivery Channel
+            <label className="block text-sm font-medium text-slate-200 mb-2">
+              Delivery channel
             </label>
             <div className="grid grid-cols-3 gap-2">
               <button
@@ -265,8 +267,8 @@ export const AlertModal: React.FC<AlertModalProps> = ({
 
           {/* Recipient Input */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-              {activeChannel === 'email' ? 'Recipient Email Address' : 'Recipient Phone Number'}
+            <label className="block text-sm font-medium text-slate-200 mb-1.5">
+              {activeChannel === 'email' ? 'Recipient email address' : 'Recipient phone number'}
             </label>
             <input
               type={activeChannel === 'email' ? 'email' : 'tel'}
@@ -287,12 +289,9 @@ export const AlertModal: React.FC<AlertModalProps> = ({
           {/* Formatted Preview Box */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                Live Message Preview
+              <label className="text-sm font-medium text-slate-200">
+                Message preview
               </label>
-              <span className="text-[11px] font-mono text-slate-400">
-                {activeChannel.toUpperCase()} Output
-              </span>
             </div>
             
             <div className="bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs text-slate-200 font-sans leading-relaxed whitespace-pre-line relative">
@@ -313,20 +312,26 @@ export const AlertModal: React.FC<AlertModalProps> = ({
 
           {/* Integration Status Notice */}
           <div className={`p-3 rounded-xl border text-xs flex items-start gap-2.5 ${
-            isChannelConfigured()
+            isChannelConfigured() && !smsTrialTemplate
               ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300'
               : 'bg-amber-950/40 border-amber-800/60 text-amber-200'
           }`}>
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <div>
-              {isChannelConfigured() ? (
+              {!isChannelConfigured() ? (
                 <span>
-                  <strong>Provider configured</strong>: Dispatch sends a real message to the destination entered above.
+                  <strong>Channel unavailable</strong>: This provider is not configured, so sending is disabled. The message can still be copied.
+                  {activeChannel === 'whatsapp' && ' Configure TWILIO_WHATSAPP_FROM with a WhatsApp-enabled Twilio sender.'}
+                </span>
+              ) : smsTrialTemplate ? (
+                <span>
+                  <strong>Twilio trial account</strong>: SMS reaches only numbers verified in the Twilio Console, and Twilio
+                  delivers its own sample text ({smsTrialTemplate}) instead of the message above. Upgrade the Twilio account
+                  to send the alert itself.
                 </span>
               ) : (
                 <span>
-                  <strong>Channel unavailable</strong>: This provider is not configured, so dispatch is disabled. Previews can still be copied.
-                  {activeChannel === 'whatsapp' && ' Configure TWILIO_WHATSAPP_FROM with a WhatsApp-enabled Twilio sender.'}
+                  <strong>Provider configured</strong>: Sending delivers a real message to the destination entered above.
                 </span>
               )}
             </div>
@@ -344,6 +349,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
                 Status: {(sendResult.status || (sendResult.success ? 'sent' : 'failed')).toUpperCase()}
               </div>
               <div className="mt-1">{sendResult.message}</div>
+              {sendResult.hint && <div className="mt-1.5">{sendResult.hint}</div>}
               {sendResult.sid && (
                 <div className="font-mono text-[10px] text-slate-400 mt-1">
                   Message SID: {sendResult.sid}
@@ -361,7 +367,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 transition-colors"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-            <span>{copied ? 'Copied!' : 'Copy Preview'}</span>
+            <span>{copied ? 'Copied' : 'Copy message'}</span>
           </button>
 
           <div className="flex items-center gap-2">
@@ -377,7 +383,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
               className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 disabled:opacity-50 transition-colors shadow-lg shadow-orange-950/50"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>{sending ? 'Dispatching...' : 'Dispatch Alert'}</span>
+              <span>{sending ? 'Sending...' : 'Send alert'}</span>
             </button>
           </div>
         </div>
