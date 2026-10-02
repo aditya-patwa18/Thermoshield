@@ -27,7 +27,9 @@ class Settings:
     TWILIO_AUTH_TOKEN: str = os.getenv("TWILIO_AUTH_TOKEN", "")
     TWILIO_PHONE_NUMBER: str = os.getenv("TWILIO_PHONE_NUMBER", "")
     TWILIO_WHATSAPP_FROM: str = os.getenv("TWILIO_WHATSAPP_FROM", "")
-    
+    # Twilio trial accounts can only send preset sample messages. Empty disables the fallback.
+    TWILIO_TRIAL_TEMPLATE: str = os.getenv("TWILIO_TRIAL_TEMPLATE", "sms_internal_alerts").strip()
+
     # SMTP Email
     SMTP_HOST: str = os.getenv("SMTP_HOST", "")
     SMTP_PORT: int = int(os.getenv("SMTP_PORT", "587"))

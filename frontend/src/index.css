@@ -6,11 +6,11 @@
 
 @layer base {
   :root {
-    --bg-base: #060b14;
-    --bg-surface: #0d1424;
-    --border: #1d2939;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
+    --bg-base: #0f0d1a;
+    --bg-surface: #1a1728;
+    --border: #3a3450;
+    --text-primary: #ece8f3;
+    --text-secondary: #978dae;
     --accent: #f97316;
   }
 
@@ -19,23 +19,30 @@
   }
 
   html {
-    background: #060b14;
+    background: var(--bg-base);
   }
 
   body {
     margin: 0;
     padding: 0;
-    background: #060b14;
+    background: var(--bg-base);
     color: var(--text-primary);
-    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-family: 'Anek Latin', 'Segoe UI', sans-serif;
+    font-variant-numeric: tabular-nums;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
   }
 
   button,
-  input {
+  input,
+  select {
     font: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid #fdba74;
+    outline-offset: 2px;
   }
 
   ::-webkit-scrollbar {
@@ -43,46 +50,103 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 999px; }
-  ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  ::-webkit-scrollbar-thumb { background: #28233a; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3450; }
+}
+
+@layer components {
+  /* Anek Latin has a width axis: headlines run wide and heavy, body text stays at normal width. */
+  .font-display {
+    font-variation-settings: 'wdth' 118;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.02;
+  }
+}
+
+/* 3D heat field (src/three/heatField.js) */
+.hf-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hf-labels {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hf-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px 2px 6px;
+  border-radius: 6px;
+  background: rgba(15, 13, 26, 0.78);
+  color: #d9d3e6;
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.hf-label.is-selected,
+.hf-label.is-hovered {
+  background: #ece8f3;
+  color: #0f0d1a;
+}
+
+.hf-label-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.hf-label-name {
+  font-weight: 600;
 }
 
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background: #060b14;
-  font-family: 'Inter', sans-serif;
+  background: #0f0d1a;
+  font-family: 'Anek Latin', sans-serif;
 }
 
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: #0d1424 !important;
-  color: #f1f5f9 !important;
-  border: 1px solid #243244;
-  box-shadow: 0 16px 45px rgba(15, 23, 42, 0.7);
+  background: #1a1728 !important;
+  color: #ece8f3 !important;
+  border: 1px solid #3a3450;
+  box-shadow: 0 16px 45px rgba(15, 13, 26, 0.7);
   border-radius: 10px !important;
 }
 
 .leaflet-control-zoom {
-  border: 1px solid #243244 !important;
+  border: 1px solid #3a3450 !important;
   border-radius: 10px !important;
   overflow: hidden;
 }
 
 .leaflet-control-zoom a {
-  background: #0d1424 !important;
-  color: #cbd5e1 !important;
-  border-bottom: 1px solid #243244 !important;
+  background: #1a1728 !important;
+  color: #d9d3e6 !important;
+  border-bottom: 1px solid #3a3450 !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background: #111827 !important;
+  background: #28233a !important;
   color: white !important;
 }
 
 .leaflet-control-attribution {
-  background: rgba(6, 11, 20, 0.75) !important;
-  color: #94a3b8 !important;
+  background: rgba(15, 13, 26, 0.75) !important;
+  color: #978dae !important;
   font-size: 10px !important;
 }
 

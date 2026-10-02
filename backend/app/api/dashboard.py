@@ -2,8 +2,17 @@ from fastapi import APIRouter, Query, HTTPException
 from typing import Optional
 from ..services.dashboard_service import dashboard_service
 from ..services.location_service import location_service
+from ..services.heat_field_service import heat_field_service
 
 router = APIRouter(tags=["Command Dashboard"])
+
+@router.get("/heat-field", summary="Get Current Heat Stress for All Monitored Cities")
+async def get_heat_field():
+    """
+    Returns current temperature, humidity and HTSI for every monitored city in one call.
+    Cities are returned without values when the weather provider is unreachable.
+    """
+    return await heat_field_service.get_heat_field()
 
 @router.get("/dashboard/location/{location_id}", summary="Get Full Unified Dashboard Intelligence by Location ID")
 async def get_dashboard_by_location_slug(location_id: str):

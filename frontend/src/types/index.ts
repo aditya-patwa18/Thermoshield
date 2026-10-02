@@ -207,6 +207,36 @@ export interface DashboardData {
   };
 }
 
+export interface HeatFieldCity {
+  id: string;
+  city: string;
+  state: string;
+  latitude: number;
+  longitude: number;
+  temperature_c: number | null;
+  relative_humidity: number | null;
+  htsi: number | null;
+  htsi_category: RiskCategory | null;
+}
+
+export interface HeatFieldData {
+  updated_at: string;
+  is_live: boolean;
+  source: string;
+  cities: HeatFieldCity[];
+}
+
+export interface NotificationResult {
+  success: boolean;
+  status?: string;
+  message: string;
+  hint?: string;
+  sid?: string;
+  error_code?: number;
+  trial?: boolean;
+  trial_template?: string;
+}
+
 export interface SystemStatus {
   status: string;
   version: string;
@@ -218,7 +248,7 @@ export interface SystemStatus {
   };
   maps_configured: boolean;
   notifications: {
-    sms: { provider: string; configured: boolean; status: string };
+    sms: { provider: string; configured: boolean; status: string; trial?: boolean; trial_template?: string | null };
     whatsapp: { provider: string; configured: boolean; status: string };
     email: { provider: string; configured: boolean; status: string };
   };

@@ -15,16 +15,37 @@ interface RiskMapProps {
   legendClass?: string;
 }
 
+// Dark enough to sit in the dashboard, but land, sea, roads and place names each get
+// their own tone so the map can be read: the markers still need a geography under them.
 const mapStyles = [
-  { elementType: 'geometry', stylers: [{ color: '#101827' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#cbd5e1' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#0f172a' }] },
-  { featureType: 'water', stylers: [{ color: '#0f172a' }] },
-  { featureType: 'road', stylers: [{ color: '#1f2937' }] },
+  { elementType: 'geometry', stylers: [{ color: '#3d3758' }] },
+  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#ece8f3' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1728' }, { weight: 3 }] },
+
+  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#3d3758' }] },
+  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#36405a' }] },
   { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ visibility: 'on' }, { color: '#2f4a4c' }] },
+
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#15395c' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#8fb8de' }] },
+
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#5b5478' }] },
+  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#28233a' }] },
+  { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#6f6790' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#a79cc9' }] },
+  { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#28233a' }] },
+  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#d9d3e6' }] },
+  { featureType: 'road.local', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-  { featureType: 'landscape', stylers: [{ color: '#1e293b' }] },
-  { featureType: 'administrative', stylers: [{ visibility: 'off' }] }
+  { featureType: 'transit.line', elementType: 'geometry', stylers: [{ visibility: 'on' }, { color: '#4f4870' }] },
+
+  { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#bcb3cf' }, { weight: 1 }] },
+  { featureType: 'administrative.land_parcel', stylers: [{ visibility: 'off' }] },
+  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
+  { featureType: 'administrative.neighborhood', elementType: 'labels.text.fill', stylers: [{ color: '#d9d3e6' }] }
 ];
 
 export const RiskMapComponent: React.FC<RiskMapProps> = ({
@@ -132,7 +153,7 @@ export const RiskMapComponent: React.FC<RiskMapProps> = ({
         title: `${city.city}, ${city.state}`,
         label: {
           text: city.city.substring(0, 2).toUpperCase(),
-          color: '#ffffff',
+          color: isSelected ? '#0f0d1a' : '#ffffff',
           fontSize: '10px',
           fontWeight: '700'
         },
@@ -190,7 +211,7 @@ export const RiskMapComponent: React.FC<RiskMapProps> = ({
         markersRef.current.push(marker);
       });
     }
-  }, [monitoredCities, facilities, currentLocation, activeLayer, zoom]);
+  }, [mapReady, monitoredCities, facilities, currentLocation, activeLayer, zoom]);
 
   const layerOptions = [
     { id: 'risk', label: 'Heat Risk', icon: ShieldAlert },

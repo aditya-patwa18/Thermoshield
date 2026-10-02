@@ -13,7 +13,7 @@ import { API } from './pages/API';
 import { Methodology } from './pages/Methodology';
 import { AlertModal } from './components/Alerts/AlertModal';
 import { api } from './services/api';
-import { DashboardData, SystemStatus, ActiveAlert } from './types';
+import { DashboardData, SystemStatus, ActiveAlert, HeatFieldData } from './types';
 import { AlertCircle, ShieldAlert } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -22,6 +22,7 @@ export const App: React.FC = () => {
   const [monitoredCities, setMonitoredCities] = useState<any[]>([]);
   const [wardsGeoJSON, setWardsGeoJSON] = useState<any | null>(null);
   const [activeAlerts, setActiveAlerts] = useState<ActiveAlert[]>([]);
+  const [heatField, setHeatField] = useState<HeatFieldData | null>(null);
   
   const [currentCityId, setCurrentCityId] = useState<string>('mumbai');
   const [customCoords, setCustomCoords] = useState<{ lat: number; lon: number; name?: string } | null>(null);
@@ -36,17 +37,19 @@ export const App: React.FC = () => {
   useEffect(() => {
     const initAppData = async () => {
       try {
-        const [statusRes, citiesRes, wardsRes, alertsRes] = await Promise.allSettled([
+        const [statusRes, citiesRes, wardsRes, alertsRes, heatFieldRes] = await Promise.allSettled([
           api.getHealth(),
           api.getLocations(),
           api.getMumbaiWardsGeoJSON(),
-          api.getActiveAlerts()
+          api.getActiveAlerts(),
+          api.getHeatField()
         ]);
 
         if (statusRes.status === 'fulfilled') setSystemStatus(statusRes.value);
         if (citiesRes.status === 'fulfilled') setMonitoredCities(citiesRes.value);
         if (wardsRes.status === 'fulfilled') setWardsGeoJSON(wardsRes.value);
         if (alertsRes.status === 'fulfilled') setActiveAlerts(alertsRes.value);
+        if (heatFieldRes.status === 'fulfilled') setHeatField(heatFieldRes.value);
       } catch (e) {
         console.error('App init error:', e);
       }
@@ -85,6 +88,12 @@ export const App: React.FC = () => {
   const handleSelectCoords = (lat: number, lon: number, name?: string) => {
     setCustomCoords({ lat, lon, name });
   };
+
+  // A new location takes a moment to load: these let the overview respond at once.
+  const pendingName = customCoords
+    ? customCoords.name || 'the selected location'
+    : monitoredCities.find((city) => city.id === currentCityId)?.city || currentCityId;
+  const selectedCityId = customCoords ? dashboardData?.location.id ?? null : currentCityId;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-orange-500 selection:text-white">
@@ -133,9 +142,13 @@ export const App: React.FC = () => {
             {activeTab === 'overview' && (
               <Overview
                 dashboardData={dashboardData}
+                heatField={heatField}
+                selectedCityId={selectedCityId}
+                updatingLabel={loadingDashboard ? `Loading ${pendingName}...` : null}
                 monitoredCities={monitoredCities}
                 wardsGeoJSON={wardsGeoJSON}
                 onNavigateTab={setActiveTab}
+                onSelectCity={handleSelectCity}
                 onSelectCoords={handleSelectCoords}
                 onOpenAlertModal={() => setIsAlertModalOpen(true)}
               />

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+from typing import Dict, Any, List, Tuple
 
 class WeatherProvider(ABC):
     """
@@ -20,3 +20,10 @@ class WeatherProvider(ABC):
         Retrieves multi-day hourly and daily forecast data for given coordinates.
         """
         raise NotImplementedError
+
+    async def get_current_many(self, coords: List[Tuple[float, float]]) -> List[Dict[str, Any]]:
+        """
+        Retrieves current conditions for several (lat, lon) points, in the same order.
+        Providers with a bulk endpoint should override this.
+        """
+        return [await self.get_current_weather(lat, lon) for lat, lon in coords]
