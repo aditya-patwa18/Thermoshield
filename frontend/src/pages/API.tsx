@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { SystemStatus } from '../types';
 import axios from 'axios';
+import { API_BASE_URL } from '../services/api';
 
 interface APIPageProps {
   systemStatus: SystemStatus | null;
@@ -24,8 +25,6 @@ export const API: React.FC<APIPageProps> = ({ systemStatus }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [statusCode, setStatusCode] = useState<number | null>(null);
-
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
   const endpoints = [
     { label: 'GET /api/dashboard/location/mumbai', path: '/dashboard/location/mumbai' },
