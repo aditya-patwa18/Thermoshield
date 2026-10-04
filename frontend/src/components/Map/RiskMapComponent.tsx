@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layers, Building2, Flame, ShieldAlert, Crosshair } from 'lucide-react';
+import { CircleMarker, GeoJSON, MapContainer, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import { LocationInfo, FacilitiesGroup } from '../../types';
-import { loadGoogleMaps, onGoogleMapsAuthFailure } from '../../services/googleMaps';
 
 interface RiskMapProps {
   currentLocation: LocationInfo | null;
@@ -15,38 +15,25 @@ interface RiskMapProps {
   legendClass?: string;
 }
 
-// Dark enough to sit in the dashboard, but land, sea, roads and place names each get
-// their own tone so the map can be read: the markers still need a geography under them.
-const mapStyles = [
-  { elementType: 'geometry', stylers: [{ color: '#3d3758' }] },
-  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#ece8f3' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1728' }, { weight: 3 }] },
+interface MapInteractionProps {
+  center: { lat: number; lng: number };
+  zoom: number;
+  onSelectLocation: (lat: number, lon: number) => void;
+}
 
-  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#3d3758' }] },
-  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#36405a' }] },
-  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ visibility: 'on' }, { color: '#2f4a4c' }] },
+const MapInteraction: React.FC<MapInteractionProps> = ({ center, zoom, onSelectLocation }) => {
+  const map = useMap();
 
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#15395c' }] },
-  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#8fb8de' }] },
+  useEffect(() => {
+    map.setView([center.lat, center.lng], zoom);
+  }, [map, center.lat, center.lng, zoom]);
 
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#5b5478' }] },
-  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#28233a' }] },
-  { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#6f6790' }] },
-  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#a79cc9' }] },
-  { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#28233a' }] },
-  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#d9d3e6' }] },
-  { featureType: 'road.local', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+  useMapEvents({
+    click: (event) => onSelectLocation(event.latlng.lat, event.latlng.lng)
+  });
 
-  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-  { featureType: 'transit.line', elementType: 'geometry', stylers: [{ visibility: 'on' }, { color: '#4f4870' }] },
-
-  { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#bcb3cf' }, { weight: 1 }] },
-  { featureType: 'administrative.land_parcel', stylers: [{ visibility: 'off' }] },
-  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
-  { featureType: 'administrative.neighborhood', elementType: 'labels.text.fill', stylers: [{ color: '#d9d3e6' }] }
-];
+  return null;
+};
 
 export const RiskMapComponent: React.FC<RiskMapProps> = ({
   currentLocation,
@@ -59,17 +46,7 @@ export const RiskMapComponent: React.FC<RiskMapProps> = ({
   heightClass = 'h-[500px]',
   legendClass = ''
 }) => {
-  const mapRef = useRef<HTMLDivElement | null>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
-  const onSelectLocationRef = useRef(onSelectLocation);
   const [showLayerMenu, setShowLayerMenu] = useState(false);
-  const [mapReady, setMapReady] = useState(false);
-  const [mapError, setMapError] = useState<string | null>(null);
-
-  useEffect(() => {
-    onSelectLocationRef.current = onSelectLocation;
-  }, [onSelectLocation]);
 
   const center = currentLocation
     ? { lat: currentLocation.latitude, lng: currentLocation.longitude }
@@ -82,136 +59,6 @@ export const RiskMapComponent: React.FC<RiskMapProps> = ({
         ? 10
         : 8
     : 6;
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    let disposed = false;
-    const authFailure = () => {
-      setMapError('Google Maps rejected the API key. Check Maps JavaScript API, billing, and localhost referrer restrictions.');
-    };
-    const unsubscribeAuthFailure = onGoogleMapsAuthFailure(authFailure);
-
-    loadGoogleMaps().then((googleMaps) => {
-      if (disposed) return;
-      if (!mapRef.current || !googleMaps) return;
-      const map = new googleMaps.Map(mapRef.current, {
-        center,
-        zoom,
-        disableDefaultUI: false,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: true,
-        zoomControl: true,
-        styles: mapStyles
-      });
-
-      mapInstanceRef.current = map;
-      map.addListener('click', (event: any) => {
-        if (event.latLng) {
-          onSelectLocationRef.current(event.latLng.lat(), event.latLng.lng());
-        }
-      });
-
-      setMapReady(true);
-      setMapError(null);
-    }).catch(() => {
-      if (!disposed) {
-        setMapError('Google Maps could not load. Check the API key, enabled APIs, billing, and network access.');
-      }
-    });
-
-    return () => {
-      disposed = true;
-      unsubscribeAuthFailure();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!mapInstanceRef.current) return;
-    const googleMaps: any = (window as any).google?.maps;
-    if (!googleMaps) return;
-    const target = new googleMaps.LatLng(center.lat, center.lng);
-    mapInstanceRef.current.panTo(target);
-    mapInstanceRef.current.setZoom(zoom);
-  }, [center, zoom]);
-
-  useEffect(() => {
-    if (!mapInstanceRef.current) return;
-
-    markersRef.current.forEach((marker) => marker.setMap(null));
-    markersRef.current = [];
-
-    const googleMaps: any = (window as any).google?.maps;
-    if (!googleMaps) return;
-
-    monitoredCities.forEach((city) => {
-      const isSelected = currentLocation?.id === city.id;
-      const marker = new googleMaps.Marker({
-        position: { lat: city.latitude, lng: city.longitude },
-        map: mapInstanceRef.current ?? undefined,
-        title: `${city.city}, ${city.state}`,
-        label: {
-          text: city.city.substring(0, 2).toUpperCase(),
-          color: isSelected ? '#0f0d1a' : '#ffffff',
-          fontSize: '10px',
-          fontWeight: '700'
-        },
-        icon: {
-          path: googleMaps.SymbolPath.CIRCLE,
-          scale: isSelected ? 13 : 10,
-          fillColor: isSelected ? '#ffffff' : '#f97316',
-          fillOpacity: 1,
-          strokeColor: '#ffffff',
-          strokeWeight: 2
-        }
-      });
-
-      marker.addListener('click', () => {
-        onSelectLocation(city.latitude, city.longitude, `${city.city}, ${city.state}`);
-      });
-
-      markersRef.current.push(marker);
-    });
-
-    if (facilities && (activeLayer === 'infrastructure' || zoom >= 11)) {
-      facilities.cooling_centers?.forEach((centerItem) => {
-        const marker = new googleMaps.Marker({
-          position: { lat: centerItem.latitude, lng: centerItem.longitude },
-          map: mapInstanceRef.current ?? undefined,
-          title: centerItem.name,
-          label: { text: 'CC', color: '#fff', fontSize: '10px', fontWeight: '700' },
-          icon: {
-            path: googleMaps.SymbolPath.CIRCLE,
-            scale: 11,
-            fillColor: '#06b6d4',
-            fillOpacity: 1,
-            strokeColor: '#ffffff',
-            strokeWeight: 2
-          }
-        });
-        markersRef.current.push(marker);
-      });
-
-      facilities.hospitals?.forEach((hospital) => {
-        const marker = new googleMaps.Marker({
-          position: { lat: hospital.latitude, lng: hospital.longitude },
-          map: mapInstanceRef.current ?? undefined,
-          title: hospital.name,
-          label: { text: 'H', color: '#fff', fontSize: '10px', fontWeight: '700' },
-          icon: {
-            path: googleMaps.SymbolPath.CIRCLE,
-            scale: 11,
-            fillColor: '#f43f5e',
-            fillOpacity: 1,
-            strokeColor: '#ffffff',
-            strokeWeight: 2
-          }
-        });
-        markersRef.current.push(marker);
-      });
-    }
-  }, [mapReady, monitoredCities, facilities, currentLocation, activeLayer, zoom]);
 
   const layerOptions = [
     { id: 'risk', label: 'Heat Risk', icon: ShieldAlert },
@@ -256,16 +103,43 @@ export const RiskMapComponent: React.FC<RiskMapProps> = ({
         )}
       </div>
 
-      <div ref={mapRef} className="h-full w-full" />
-
-      {(!mapReady || mapError) && (
-        <div className="absolute inset-0 z-[400] flex items-center justify-center bg-slate-950/90 p-6 text-center text-sm text-slate-300">
-          <div className="max-w-md">
-            <div className="font-semibold text-white">{mapError ? 'Map unavailable' : 'Loading Google Maps...'}</div>
-            {mapError && <p className="mt-2 text-xs leading-relaxed text-slate-400">{mapError}</p>}
-          </div>
-        </div>
-      )}
+      <MapContainer center={[center.lat, center.lng]} zoom={zoom} scrollWheelZoom className="z-0 h-full w-full">
+        <MapInteraction center={center} zoom={zoom} onSelectLocation={onSelectLocation} />
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {wardsGeoJSON && <GeoJSON data={wardsGeoJSON as any} style={{ color: '#fdba74', weight: 1, fillOpacity: 0.04 }} />}
+        {monitoredCities.map((city) => {
+          const isSelected = currentLocation?.id === city.id;
+          return (
+            <CircleMarker
+              key={city.id}
+              center={[city.latitude, city.longitude]}
+              radius={isSelected ? 10 : 7}
+              pathOptions={{ color: '#ffffff', weight: 2, fillColor: isSelected ? '#ffffff' : '#f97316', fillOpacity: 1 }}
+              eventHandlers={{
+                click: (event) => {
+                  event.originalEvent.stopPropagation();
+                  onSelectLocation(city.latitude, city.longitude, `${city.city}, ${city.state}`);
+                }
+              }}
+            >
+              <Popup>{city.city}, {city.state}</Popup>
+            </CircleMarker>
+          );
+        })}
+        {activeLayer === 'infrastructure' && facilities?.cooling_centers?.map((item) => (
+          <CircleMarker key={item.id} center={[item.latitude, item.longitude]} radius={8} pathOptions={{ color: '#ffffff', weight: 2, fillColor: '#06b6d4', fillOpacity: 1 }}>
+            <Popup>{item.name}</Popup>
+          </CircleMarker>
+        ))}
+        {activeLayer === 'infrastructure' && facilities?.hospitals?.map((item) => (
+          <CircleMarker key={item.id} center={[item.latitude, item.longitude]} radius={8} pathOptions={{ color: '#ffffff', weight: 2, fillColor: '#f43f5e', fillOpacity: 1 }}>
+            <Popup>{item.name}</Popup>
+          </CircleMarker>
+        ))}
+      </MapContainer>
 
       <div className={`absolute z-[500] max-w-xs rounded-xl ${legendClass || 'bottom-4 left-4'} border border-slate-700 bg-slate-900/90 p-3 shadow-2xl backdrop-blur`}>
         <div className="mb-2 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-300">

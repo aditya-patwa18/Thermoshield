@@ -18,7 +18,8 @@ class DashboardService:
         lat: float,
         lon: float,
         location_id: Optional[str] = None,
-        custom_name: Optional[str] = None
+        custom_name: Optional[str] = None,
+        weather_override: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Assembles the comprehensive ThermalShield Intelligence Dashboard payload.
@@ -57,7 +58,7 @@ class DashboardService:
 
         # 2. Fetch Meteorological Forecast Data
         city_hint = city_match["id"] if city_match else ("mumbai" if ward_props else None)
-        weather_payload = await weather_service.get_forecast(lat, lon, days=5, city_hint=city_hint)
+        weather_payload = weather_override or await weather_service.get_forecast(lat, lon, days=5, city_hint=city_hint)
         current_w = weather_payload["current"]
 
         # 3. Calculate Thermal Stress Engine Metrics

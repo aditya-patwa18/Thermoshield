@@ -41,6 +41,12 @@ class HeatFieldService:
         self._cached_at = now
         return self._cache
 
+    def build_live_readings(self, readings: List[Dict[str, Any]]) -> Dict[str, Any]:
+        cities = location_service.get_all_locations()
+        readings_by_id = {reading["id"]: reading for reading in readings}
+        currents = [readings_by_id.get(city["id"]) for city in cities]
+        return self._build(cities, currents, is_live=True, source="Live Open-Meteo")
+
     def _build(
         self,
         cities: List[Dict[str, Any]],

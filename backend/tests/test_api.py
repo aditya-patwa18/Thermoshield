@@ -196,3 +196,60 @@ def test_heat_field_does_not_invent_values_when_weather_is_unavailable(monkeypat
     assert data["is_live"] is False
     assert len(data["cities"]) >= 25
     assert all(c["htsi"] is None and c["temperature_c"] is None for c in data["cities"])
+
+
+def test_live_heat_field_calculates_posted_weather_readings():
+    from app.services.heat_field_service import heat_field_service
+
+    cached_field = heat_field_service._cache
+    cached_at = heat_field_service._cached_at
+    res = client.post("/api/heat-field/live", json={
+        "readings": [{
+            "id": "mumbai",
+            "temperature_c": 32.5,
+            "relative_humidity": 68,
+            "wind_speed_ms": 2.1,
+            "solar_radiation_wm2": 420
+        }]
+    })
+
+    assert res.status_code == 200
+    data = res.json()
+    assert data["is_live"] is True
+    assert data["source"] == "Live Open-Meteo"
+    mumbai = next(city for city in data["cities"] if city["id"] == "mumbai")
+    assert mumbai["temperature_c"] == 32.5
+    assert 0 <= mumbai["htsi"] <= 100
+    assert heat_field_service._cache is cached_field
+    assert heat_field_service._cached_at == cached_at
+
+
+def test_live_dashboard_uses_posted_weather_for_calculations():
+    res = client.post("/api/dashboard/live", json={
+        "latitude": 19.076,
+        "longitude": 72.8777,
+        "location_id": "mumbai",
+        "weather": {
+            "current": {
+                "temperature_c": 31.2,
+                "relative_humidity": 64,
+                "wind_speed_kmh": 7.2,
+                "wind_speed_ms": 2.0,
+                "wind_direction_deg": 180,
+                "solar_radiation_wm2": 350,
+                "cloud_cover_percent": 20,
+                "surface_pressure_hpa": 1010,
+                "dew_point_c": 23,
+                "timestamp": "2026-10-04T14:00",
+                "provider": "Open-Meteo"
+            },
+            "daily": [],
+            "hourly_24h": []
+        }
+    })
+
+    assert res.status_code == 200
+    data = res.json()
+    assert data["weather"]["current"]["temperature_c"] == 31.2
+    assert data["weather"]["is_live"] is True
+    assert data["metadata"]["is_live_weather"] is True

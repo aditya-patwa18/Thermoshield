@@ -13,7 +13,8 @@ import { API } from './pages/API';
 import { Methodology } from './pages/Methodology';
 import { AlertModal } from './components/Alerts/AlertModal';
 import { api } from './services/api';
-import { DashboardData, SystemStatus, ActiveAlert, HeatFieldData } from './types';
+import { fetchCurrentReadings, fetchWeatherForecast } from './services/weather';
+import { DashboardData, SystemStatus, ActiveAlert, HeatFieldData, LocationInfo } from './types';
 import { AlertCircle, ShieldAlert } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -37,19 +38,45 @@ export const App: React.FC = () => {
   useEffect(() => {
     const initAppData = async () => {
       try {
-        const [statusRes, citiesRes, wardsRes, alertsRes, heatFieldRes] = await Promise.allSettled([
+        const [statusRes, citiesRes, wardsRes, alertsRes] = await Promise.allSettled([
           api.getHealth(),
           api.getLocations(),
           api.getMumbaiWardsGeoJSON(),
-          api.getActiveAlerts(),
-          api.getHeatField()
+          api.getActiveAlerts()
         ]);
 
         if (statusRes.status === 'fulfilled') setSystemStatus(statusRes.value);
-        if (citiesRes.status === 'fulfilled') setMonitoredCities(citiesRes.value);
+        if (citiesRes.status === 'fulfilled') {
+          setMonitoredCities(citiesRes.value);
+          try {
+            const readings = await fetchCurrentReadings(citiesRes.value);
+            setHeatField(await api.setLiveHeatField(readings));
+          } catch (weatherError) {
+            console.error('Failed to load live heat-field weather:', weatherError);
+            try {
+              setHeatField(await api.getHeatField());
+            } catch {
+              setHeatField({
+                updated_at: new Date().toISOString(),
+                is_live: false,
+                source: 'Weather provider unavailable',
+                cities: citiesRes.value.map((city: LocationInfo & { city: string }) => ({
+                  id: city.id,
+                  city: city.city,
+                  state: city.state,
+                  latitude: city.latitude,
+                  longitude: city.longitude,
+                  temperature_c: null,
+                  relative_humidity: null,
+                  htsi: null,
+                  htsi_category: null
+                }))
+              });
+            }
+          }
+        }
         if (wardsRes.status === 'fulfilled') setWardsGeoJSON(wardsRes.value);
         if (alertsRes.status === 'fulfilled') setActiveAlerts(alertsRes.value);
-        if (heatFieldRes.status === 'fulfilled') setHeatField(heatFieldRes.value);
       } catch (e) {
         console.error('App init error:', e);
       }
@@ -63,16 +90,39 @@ export const App: React.FC = () => {
       setLoadingDashboard(true);
       setErrorMsg(null);
       try {
-        let data: DashboardData;
+        let latitude: number;
+        let longitude: number;
+        let locationId: string | undefined;
         if (customCoords) {
-          data = await api.getDashboardByCoords(customCoords.lat, customCoords.lon, customCoords.name);
+          latitude = customCoords.lat;
+          longitude = customCoords.lon;
         } else {
-          data = await api.getDashboardByLocation(currentCityId);
+          const location = await api.getLocationById(currentCityId);
+          latitude = location.latitude;
+          longitude = location.longitude;
+          locationId = currentCityId;
         }
+
+        const weather = await fetchWeatherForecast(latitude, longitude);
+        const data = await api.getLiveDashboard({
+          latitude,
+          longitude,
+          location_id: locationId,
+          name: customCoords?.name,
+          weather
+        });
         setDashboardData(data);
-      } catch (e: any) {
-        console.error('Failed to load dashboard:', e);
-        setErrorMsg('Failed to synchronize live weather intelligence. Please ensure backend is running.');
+      } catch (liveWeatherError) {
+        console.error('Failed to load live dashboard weather:', liveWeatherError);
+        try {
+          const fallback = customCoords
+            ? await api.getDashboardByCoords(customCoords.lat, customCoords.lon, customCoords.name)
+            : await api.getDashboardByLocation(currentCityId);
+          setDashboardData(fallback);
+        } catch (e) {
+          console.error('Failed to load dashboard:', e);
+          setErrorMsg('Could not load weather intelligence. Please try again shortly.');
+        }
       } finally {
         setLoadingDashboard(false);
       }
@@ -122,6 +172,14 @@ export const App: React.FC = () => {
           <div className="bg-red-950/40 border border-red-500/50 rounded-xl p-3.5 text-xs text-red-200 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
             <span>{errorMsg}</span>
+          </div>
+        </div>
+      )}
+
+      {dashboardData && !dashboardData.metadata.is_live_weather && (
+        <div role="status" className="mx-auto mt-4 w-full max-w-7xl px-4 lg:px-6">
+          <div className="rounded-lg border border-amber-500/40 bg-amber-950/40 p-3 text-xs text-amber-100">
+            Live weather is temporarily unavailable. Values shown are prototype fallback data, not current readings.
           </div>
         </div>
       )}

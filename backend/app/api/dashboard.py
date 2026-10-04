@@ -3,6 +3,7 @@ from typing import Optional
 from ..services.dashboard_service import dashboard_service
 from ..services.location_service import location_service
 from ..services.heat_field_service import heat_field_service
+from ..schemas.schemas import LiveDashboardRequest, LiveHeatFieldRequest
 
 router = APIRouter(tags=["Command Dashboard"])
 
@@ -13,6 +14,21 @@ async def get_heat_field():
     Cities are returned without values when the weather provider is unreachable.
     """
     return await heat_field_service.get_heat_field()
+
+@router.post("/heat-field/live", summary="Calculate Heat Stress from Live Weather Readings")
+async def set_live_heat_field(request: LiveHeatFieldRequest):
+    return heat_field_service.build_live_readings([reading.model_dump() for reading in request.readings])
+
+@router.post("/dashboard/live", summary="Build Dashboard Intelligence from Live Weather Data")
+async def get_live_dashboard(request: LiveDashboardRequest):
+    weather = {**request.weather, "source": "Live Open-Meteo", "is_live": True}
+    return await dashboard_service.get_dashboard_data(
+        lat=request.latitude,
+        lon=request.longitude,
+        location_id=request.location_id,
+        custom_name=request.name,
+        weather_override=weather
+    )
 
 @router.get("/dashboard/location/{location_id}", summary="Get Full Unified Dashboard Intelligence by Location ID")
 async def get_dashboard_by_location_slug(location_id: str):

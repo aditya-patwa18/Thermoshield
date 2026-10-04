@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { DashboardData, SystemStatus, ActiveAlert, FacilitiesGroup, HeatFieldData, NotificationResult } from '../types';
+import { LiveHeatFieldReading, LiveWeatherForecast } from './weather';
 
 const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 export const API_BASE_URL = configuredApiBaseUrl
@@ -55,6 +56,22 @@ export const api = {
       ? `/dashboard?lat=${lat}&lon=${lon}&name=${encodeURIComponent(name)}`
       : `/dashboard?lat=${lat}&lon=${lon}`;
     const res = await client.get<DashboardData>(url);
+    return res.data;
+  },
+
+  getLiveDashboard: async (payload: {
+    latitude: number;
+    longitude: number;
+    location_id?: string;
+    name?: string;
+    weather: LiveWeatherForecast;
+  }): Promise<DashboardData> => {
+    const res = await client.post<DashboardData>('/dashboard/live', payload);
+    return res.data;
+  },
+
+  setLiveHeatField: async (readings: LiveHeatFieldReading[]): Promise<HeatFieldData> => {
+    const res = await client.post<HeatFieldData>('/heat-field/live', { readings });
     return res.data;
   },
 

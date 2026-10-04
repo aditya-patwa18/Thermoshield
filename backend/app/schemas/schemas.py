@@ -27,6 +27,23 @@ class HTSIResponse(BaseModel):
     sub_indices: Dict[str, Any]
     components: Dict[str, float]
 
+class LiveDashboardRequest(BaseModel):
+    latitude: float = Field(..., ge=-90, le=90)
+    longitude: float = Field(..., ge=-180, le=180)
+    location_id: Optional[str] = None
+    name: Optional[str] = None
+    weather: Dict[str, Any]
+
+class LiveHeatFieldReading(BaseModel):
+    id: str
+    temperature_c: float
+    relative_humidity: float = Field(..., ge=0, le=100)
+    wind_speed_ms: float = Field(..., ge=0)
+    solar_radiation_wm2: float = Field(..., ge=0)
+
+class LiveHeatFieldRequest(BaseModel):
+    readings: List[LiveHeatFieldReading]
+
 # --- Vulnerability Schemas ---
 class VulnerabilityResponse(BaseModel):
     score: float
