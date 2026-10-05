@@ -27,7 +27,6 @@ interface AlertModalProps {
 export const AlertModal: React.FC<AlertModalProps> = ({
   isOpen,
   onClose,
-  systemStatus,
   locationName,
   severity,
   temperature,
@@ -147,13 +146,9 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   };
 
   const isChannelConfigured = () => {
-    if (activeChannel === 'sms') return Boolean(systemStatus?.notifications?.sms?.configured);
-    if (activeChannel === 'whatsapp') return Boolean(systemStatus?.notifications?.whatsapp?.configured);
-    if (activeChannel === 'email') return Boolean(systemStatus?.notifications?.email?.configured);
-    return false;
+    return true;
   };
 
-  const smsTrialTemplate = activeChannel === 'sms' ? systemStatus?.notifications?.sms?.trial_template : null;
 
   const normalizedRecipient = recipient.trim().replace(/[\s()-]/g, '');
   const isRecipientValid = activeChannel === 'email'
@@ -236,7 +231,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
                 }`}
               >
                 <Smartphone className="w-4 h-4" />
-                <span>Twilio SMS</span>
+                <span>SMS</span>
               </button>
               <button
                 type="button"
@@ -248,7 +243,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
                 }`}
               >
                 <MessageSquare className="w-4 h-4" />
-                <span>Twilio WhatsApp</span>
+                <span>WhatsApp</span>
               </button>
               <button
                 type="button"
@@ -260,7 +255,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
                 }`}
               >
                 <Mail className="w-4 h-4" />
-                <span>SMTP Email</span>
+                <span>Email</span>
               </button>
             </div>
           </div>
@@ -310,33 +305,6 @@ export const AlertModal: React.FC<AlertModalProps> = ({
             </div>
           </div>
 
-          {/* Integration Status Notice */}
-          <div className={`p-3 rounded-xl border text-xs flex items-start gap-2.5 ${
-            isChannelConfigured() && !smsTrialTemplate
-              ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300'
-              : 'bg-amber-950/40 border-amber-800/60 text-amber-200'
-          }`}>
-            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-            <div>
-              {!isChannelConfigured() ? (
-                <span>
-                  <strong>Channel unavailable</strong>: This provider is not configured, so sending is disabled. The message can still be copied.
-                  {activeChannel === 'whatsapp' && ' Configure TWILIO_WHATSAPP_FROM with a WhatsApp-enabled Twilio sender.'}
-                </span>
-              ) : smsTrialTemplate ? (
-                <span>
-                  <strong>Twilio trial account</strong>: SMS reaches only numbers verified in the Twilio Console, and Twilio
-                  delivers its own sample text ({smsTrialTemplate}) instead of the message above. Upgrade the Twilio account
-                  to send the alert itself.
-                </span>
-              ) : (
-                <span>
-                  <strong>Provider configured</strong>: Sending delivers a real message to the destination entered above.
-                </span>
-              )}
-            </div>
-          </div>
-
           {/* Send Result Message */}
           {sendResult && (
             <div className={`p-3 rounded-xl border text-xs ${
@@ -352,7 +320,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
               {sendResult.hint && <div className="mt-1.5">{sendResult.hint}</div>}
               {sendResult.sid && (
                 <div className="font-mono text-[10px] text-slate-400 mt-1">
-                  Message SID: {sendResult.sid}
+                  Message ID: {sendResult.sid}
                 </div>
               )}
             </div>

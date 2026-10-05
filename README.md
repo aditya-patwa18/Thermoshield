@@ -12,9 +12,9 @@ Start the API from `backend` with `python -m uvicorn app.main:app --reload --por
 
 Start the web app from `frontend` with `npm install` followed by `npm run dev`.
 
-## SMS alerts on a Twilio trial account
+## Notification demo mode
 
-Twilio trial accounts cannot send custom text. They deliver only Twilio's preset sample messages, and only to phone numbers verified in the Twilio Console. On a trial account the SMS channel therefore sends the sample named by `TWILIO_TRIAL_TEMPLATE` (default `sms_internal_alerts`) instead of the alert text, and the alert dialog says so before you send. Upgrade the Twilio account and set `TWILIO_PHONE_NUMBER` to a number you own to send the real alert.
+Alert sends are simulated for SMS, WhatsApp, and email. The app reports a demo success and reference ID, but does not deliver messages or contact Twilio/SMTP. This keeps the heat alert workflow usable without provider credentials.
 
 ## 3D heat overview
 

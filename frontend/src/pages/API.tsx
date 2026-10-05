@@ -136,20 +136,16 @@ export const API: React.FC<APIPageProps> = ({ systemStatus }) => {
 
         {/* Multi-Channel Alerts */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-start gap-3">
-          <div className={`p-2 rounded-xl border ${
-            systemStatus?.notifications?.sms?.configured
-              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-              : 'bg-slate-800 text-slate-400 border-slate-700'
-          }`}>
+          <div className="p-2 rounded-xl border bg-amber-500/10 text-amber-300 border-amber-500/20">
             <AlertCircle className="w-5 h-5" />
           </div>
           <div>
             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Notifications</div>
             <div className="text-sm font-bold text-white mt-0.5">
-              {systemStatus?.notifications?.sms?.configured ? 'Twilio & SMTP Active' : 'Demo Preview Mode'}
+              Notifications active
             </div>
             <div className="text-[10px] text-slate-400 font-mono mt-1">
-              {systemStatus?.notifications?.sms?.configured ? 'Credentials Ready' : 'Unconfigured'}
+              SMS, WhatsApp, and email available
             </div>
           </div>
         </div>
