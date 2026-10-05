@@ -1,27 +1,83 @@
 import smtplib
 import ssl
+from html import escape
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import Dict, Any
+import httpx
 from ...config import settings
 from .base import BaseNotificationProvider
 
 class EmailNotificationProvider(BaseNotificationProvider):
     def is_configured(self) -> bool:
-        return settings.is_smtp_configured
+        return settings.is_email_configured
 
     async def send(self, recipient: str, message: str, subject: str = "ThermalShield Heat-Health Warning", **kwargs) -> Dict[str, Any]:
         if not self.is_configured():
             return {
                 "success": False,
-                "provider": "SMTP Email",
+                "provider": "Twilio Email" if settings.EMAIL_PROVIDER == "twilio" else "SMTP Email",
                 "status": "unconfigured",
-                "message": "SMTP email integration is not configured. Demo preview mode is available.",
+                "message": "Email delivery is not configured. Demo preview mode is available.",
                 "recipient": recipient,
                 "subject": subject,
                 "preview_text": message
             }
 
+        if settings.EMAIL_PROVIDER == "twilio":
+            return await self._send_with_twilio(recipient, message, subject)
+
+        return self._send_with_smtp(recipient, message, subject)
+
+    async def _send_with_twilio(self, recipient: str, message: str, subject: str) -> Dict[str, Any]:
+        url = "https://comms.twilio.com/v1/Emails"
+        payload = {
+            "from": {
+                "address": settings.twilio_email_from,
+                "name": settings.TWILIO_EMAIL_FROM_NAME,
+            },
+            "to": [{"address": recipient}],
+            "content": {
+                "subject": subject,
+                "html": f"<p>{escape(message).replace(chr(10), '<br>')}</p>",
+            },
+        }
+        try:
+            async with httpx.AsyncClient(timeout=20.0) as client:
+                response = await client.post(
+                    url,
+                    json=payload,
+                    auth=(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN),
+                )
+            if response.is_error:
+                detail = response.text[:500]
+                return {
+                    "success": False,
+                    "provider": "Twilio Email",
+                    "status": "error",
+                    "error_code": response.status_code,
+                    "error_detail": detail,
+                    "message": f"Twilio email delivery failed (HTTP {response.status_code}): {detail}",
+                }
+            result = response.json() if response.content else {}
+            return {
+                "success": True,
+                "provider": "Twilio Email",
+                "status": "sent",
+                "recipient": recipient,
+                "subject": subject,
+                "sid": result.get("sid") or result.get("id"),
+                "message": "Email alert successfully dispatched.",
+            }
+        except httpx.HTTPError as exc:
+            return {
+                "success": False,
+                "provider": "Twilio Email",
+                "status": "error",
+                "message": f"Twilio email request failed: {exc}",
+            }
+
+    def _send_with_smtp(self, recipient: str, message: str, subject: str) -> Dict[str, Any]:
         try:
             msg = MIMEMultipart()
             msg["From"] = settings.SMTP_FROM

@@ -30,7 +30,7 @@ class NotificationService:
                 "status": "ready" if self.whatsapp_provider.is_configured() else "unconfigured_demo_preview"
             },
             "email": {
-                "provider": "SMTP Email",
+                "provider": "Twilio Email" if settings.EMAIL_PROVIDER == "twilio" else "SMTP Email",
                 "configured": self.email_provider.is_configured(),
                 "status": "ready" if self.email_provider.is_configured() else "unconfigured_demo_preview"
             }

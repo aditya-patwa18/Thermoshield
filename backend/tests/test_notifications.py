@@ -11,6 +11,7 @@ from app.integrations.notifications.twilio import (
     TwilioWhatsAppProvider,
     normalize_phone,
 )
+from app.integrations.notifications.email import EmailNotificationProvider
 
 ALERT_TEXT = "🚨 HEAT ADVISORY: Mumbai is experiencing VERY HIGH heat stress (37.2°C)."
 
@@ -164,3 +165,55 @@ def test_health_reports_trial_mode(monkeypatch, twilio_configured):
     assert sms["configured"] is True
     assert sms["trial"] is True
     assert sms["trial_template"] == "sms_internal_alerts"
+
+
+def test_twilio_email_sends_comms_api_payload(monkeypatch, twilio_configured):
+    monkeypatch.setattr(settings, "EMAIL_PROVIDER", "twilio")
+    monkeypatch.setattr(settings, "TWILIO_EMAIL_FROM", "")
+    requests = []
+
+    def handler(request):
+        requests.append(request)
+        return httpx.Response(202, json={"sid": "EM123"})
+
+    real_client = httpx.AsyncClient
+    monkeypatch.setattr(
+        "app.integrations.notifications.email.httpx.AsyncClient",
+        lambda **kwargs: real_client(transport=httpx.MockTransport(handler), **kwargs),
+    )
+
+    result = asyncio.run(EmailNotificationProvider().send(
+        "person@example.com", "Heat alert <please hydrate>", subject="Heat alert"
+    ))
+
+    assert len(requests) == 1
+    assert requests[0].url == "https://comms.twilio.com/v1/Emails"
+    assert requests[0].headers["authorization"].startswith("Basic ")
+    body = requests[0].read().decode()
+    assert '"address":"ACtest@twilio.email"' in body
+    assert '"address":"person@example.com"' in body
+    assert "&lt;please hydrate&gt;" in body
+    assert result["success"] is True
+    assert result["provider"] == "Twilio Email"
+    assert result["sid"] == "EM123"
+
+
+def test_twilio_email_reports_api_rejection(monkeypatch, twilio_configured):
+    monkeypatch.setattr(settings, "EMAIL_PROVIDER", "twilio")
+
+    real_client = httpx.AsyncClient
+    monkeypatch.setattr(
+        "app.integrations.notifications.email.httpx.AsyncClient",
+        lambda **kwargs: real_client(
+            transport=httpx.MockTransport(
+                lambda request: httpx.Response(401, text="Unauthorized")
+            ),
+            **kwargs,
+        ),
+    )
+
+    result = asyncio.run(EmailNotificationProvider().send("person@example.com", "Alert"))
+
+    assert result["success"] is False
+    assert result["provider"] == "Twilio Email"
+    assert result["error_code"] == 401

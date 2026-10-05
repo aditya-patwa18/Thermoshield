@@ -27,6 +27,9 @@ class Settings:
     TWILIO_AUTH_TOKEN: str = os.getenv("TWILIO_AUTH_TOKEN", "")
     TWILIO_PHONE_NUMBER: str = os.getenv("TWILIO_PHONE_NUMBER", "")
     TWILIO_WHATSAPP_FROM: str = os.getenv("TWILIO_WHATSAPP_FROM", "")
+    EMAIL_PROVIDER: str = os.getenv("EMAIL_PROVIDER", "smtp").strip().lower()
+    TWILIO_EMAIL_FROM: str = os.getenv("TWILIO_EMAIL_FROM", "").strip()
+    TWILIO_EMAIL_FROM_NAME: str = os.getenv("TWILIO_EMAIL_FROM_NAME", "ThermalShield")
     # Twilio trial accounts can only send preset sample messages. Empty disables the fallback.
     TWILIO_TRIAL_TEMPLATE: str = os.getenv("TWILIO_TRIAL_TEMPLATE", "sms_internal_alerts").strip()
 
@@ -48,6 +51,22 @@ class Settings:
     @property
     def is_smtp_configured(self) -> bool:
         return bool(self.SMTP_HOST and self.SMTP_FROM)
+
+    @property
+    def twilio_email_from(self) -> str:
+        return self.TWILIO_EMAIL_FROM or (
+            f"{self.TWILIO_ACCOUNT_SID}@twilio.email" if self.TWILIO_ACCOUNT_SID else ""
+        )
+
+    @property
+    def is_twilio_email_configured(self) -> bool:
+        return bool(self.TWILIO_ACCOUNT_SID and self.TWILIO_AUTH_TOKEN and self.twilio_email_from)
+
+    @property
+    def is_email_configured(self) -> bool:
+        if self.EMAIL_PROVIDER == "twilio":
+            return self.is_twilio_email_configured
+        return self.is_smtp_configured
 
     @property
     def is_maps_configured(self) -> bool:
